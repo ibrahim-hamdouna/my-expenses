@@ -1,5 +1,5 @@
-from django.contrib.auth.models import AbstractUser
 from django.core.validators import MinValueValidator
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 
 # Create your models here.
@@ -50,3 +50,13 @@ class Expenses(models.Model):
 
     def __str__(self):
         return f"{self.title} - {self.amount}"
+class UserReport(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
+    start_date = models.DateField()
+    end_date = models.DateField()
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Report for {self.user.username} ({self.start_date} to {self.end_date})"
