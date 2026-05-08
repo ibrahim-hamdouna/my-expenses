@@ -6,9 +6,8 @@ from django.db import models
 class User(AbstractUser):
     salary = models.DecimalField(
         max_digits=13, 
-        decimal_places=2, 
-        null=True, 
-        blank=True
+        decimal_places=2,  
+        default=0
     )
 
     def __str__(self):
@@ -36,26 +35,23 @@ class Expenses(models.Model):
         on_delete=models.CASCADE, 
         related_name='expenses'
     )
-    title = models.CharField(max_length=255)
     amount = models.DecimalField(
         max_digits=10,
         decimal_places=2,
         validators=[MinValueValidator(0.01)]
-    ) 
+    )
     date = models.DateField()
+    description = models.TextField(blank=True, null=True) 
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
-    description = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.title} - {self.amount}"
+        return f"{self.category} : {self.description}"
 class UserReport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    
     start_date = models.DateField()
     end_date = models.DateField()
-    
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

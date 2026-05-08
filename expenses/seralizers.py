@@ -1,6 +1,6 @@
-from rest_framework import serializers   
 from django.contrib.auth import authenticate, get_user_model
 from .models import Expenses, Category, UserReport
+from rest_framework import serializers   
 
 User = get_user_model()
 
@@ -12,47 +12,71 @@ class LoginSerializer(serializers.Serializer):
         username = data.get('username')
         password = data.get('password')
 
-        if username and password :
-            user = authenticate(username = username, password = password)
+        if not username:
+            raise serializers.ValidationError("Please enter your username.")
+        
+        if not password:
+            raise serializers.ValidationError("Please enter your password.")
 
-            if not user:
-                raise serializers.ValidationError("Username or password is incorrect.")
+        user = authenticate(username = username, password = password)
 
-        else:
-            raise serializers.ValidationError('Must include username and password.')
+        if not user:
+            raise serializers.ValidationError("Username or password is incorrect.")
+        
+        if not user.is_active:
+            raise serializers.ValidationError("This account has been disabled.")
         
         data['user'] = user
         
         return data
     
 class SignupSerializer(serializers.ModelSerializer):
-    password_confirm = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(
+        write_only=True,
+        required=True,
+        error_messages={
+            'blank': 'Please enter your password confirmation.'
+        }
+    )
     class Meta:
         model = User
         fields = ["first_name", "last_name", "username","email", "password", "password_confirm"]
         extra_kwargs = {
             'first_name': {
                 'required': True, 
-                'allow_blank': False
+                'allow_blank': False,
+                'error_messages':{
+                    'blank': 'Please enter your first name.'
+                }
             },
             'last_name': {
                 'required': True, 
-                'allow_blank': False
+                'allow_blank': False,
+                'error_messages':{
+                    'blank': 'Please enter your last name.'
+                }
             },
             'username': {
                 'error_messages':{
+                    'blank': "Please enter your username",
                     'unique': 'That username is already taken'
                 }
             },
-            'password' : {
-                'write_only': True
+            'email': {
+                'required': True,
+                'allow_blank': False,
+                'error_messages':{
+                    'blank': "Please enter your email"                
+                }
             },
-            'password_confirm' : {
-                'write_only': True
-            }
-            
+            'password' : {
+                'write_only': True,
+                'error_messages':{
+                    'blank': "Please enter your password",
+                }
+            } 
         }
-    
+
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("This email is already registered")
@@ -60,24 +84,32 @@ class SignupSerializer(serializers.ModelSerializer):
 
     def validate(self, attrs):
         if attrs['password'] != attrs['password_confirm']:
-            raise serializers.ValidationError({"password_confirm": "Passwords do not match."})
+            raise serializers.ValidationError("Passwords do not match.")
         return attrs
 
-    def create(self, validated_date):
-        validated_date.pop('password_confirm')
-        return User.objects.create_user(**validated_date)
+    def create(self, validated_data):
+        validated_data.pop('password_confirm')
+        return User.objects.create_user(**validated_data)
+
+class ExpensesSerializer(serializers.ModelSerializer):
+    category_name = serializers.StringRelatedField(source='category.name')
+    date = serializers.DateField(format="%b %d")
+    class Meta:
+        model = Expenses
+        fields = ['description', 'amount',  'date', 'category_name', 'created_at', 'updated_at']
+    
+    def create(self, validate_data):
+        user = self.context['request'].user
+        validate_data['user'] = user
+        return super().create(**validate_data)
+    
+    # def validate(self, attrs):
+    #     return super().validate(attrs)
 
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['name', 'user']
-
-class ExpensesSerializer(serializers.ModelSerializer):
-    category_name = serializers.StringRelatedField(many=True)
-    class Meta:
-        model = Expenses
-        fields = ['title', 'amount', 'date', 'category_name', 'description', 'created_at', 'updated_at']
-    
 
 class UserReportSerializer(serializers.ModelSerializer):
     class Meta:

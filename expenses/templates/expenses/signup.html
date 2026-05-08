@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Signup
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'expenses/css/signup.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<div class="signup-container">
+    <h2>Create an Account</h2>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="group_input">
+            <label for="first_name">First Name</label>
+            <input id="first_name" type="text" name="first_name" placeholder="Enter First Name" value="{{ request.POST.first_name|default:'' }}">
+
+            {% if errors.first_name %}
+                {% for message in errors.first_name %}
+                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div class="group_input">
+            <label for="last_name">Last Name</label>
+            <input id="last_name" type="text" name="last_name" placeholder="Enter Last Name" value="{{ request.POST.last_name|default:'' }}">
+        
+            {% if errors.last_name %}
+                {% for message in errors.last_name %}
+                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div class="group_input">
+            <label for="username">Username</label>
+            <input id="username" type="text" name="username" placeholder="Enter Username" value="{{ request.POST.username|default:'' }}">
+
+            {% if errors.username %}
+                {% for message in errors.username %}
+                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div class="group_input">
+            <label for="email">Email</label>
+            <input id="email" type="email" name="email" placeholder="Enter Email" value="{{ request.POST.email|default:'' }}">
+
+            {% if errors.email %}
+                {% for message in errors.email %}
+                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div class="group_input">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Enter Password">
+
+            {% if errors.password %}
+                {% for message in errors.password %}
+                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        <div class="group_input">
+            <label for="password_confirm">Password Confirm</label>
+            <input id="password_confirm" type="password" name="password_confirm" placeholder="Enter Password Confirm">
+
+            {% if errors.password_confirm %}
+                {% for message in errors.password_confirm %}
+                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                {% endfor %}
+            {% endif %}
+
+        </div>
+
+        {% if errors.non_field_errors %}
+            <div class="alert alert-danger-global">
+                {% for message in errors.non_field_errors %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <input type="submit" value="Register" class="register-btn">
+    </form>
+    <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+</div>
+{% endblock %}

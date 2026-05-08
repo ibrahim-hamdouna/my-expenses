@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Login
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'expenses/css/login.css' %}">
+{% endblock %}
+
+{% block navbar %}
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="group_input">
+            <label for="username">Username</label>
+            <input id="username" type="text" name="username" placeholder="Enter Username" value="{{ request.POST.username|default:'' }}">
+        </div>
+
+        <div class="group_input">
+            <label for="password">Password</label>
+            <input id="password" type="password" name="password" placeholder="Enter Password">
+        </div>
+
+        {% if errors.non_field_errors %}
+            <div class="alert alert-danger-global">
+                {% for message in errors.non_field_errors %}
+                    <p>{{ message }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <input type="submit" value="Login" class="login-btn">
+    </form>
+
+    <p class="signup">Don't have an account? <a href="{% url 'signup' %}">Signup here</a></p>
+    
+</div>
+{% endblock %}

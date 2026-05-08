@@ -1,0 +1,36 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}My Expenses{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% block navbar %}
+        <header>
+            <nav>
+                <div class="logo"><img src="{% static 'logo.png' %}" alt="logo"></div>
+                <ul>
+                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'expenses' %}">My Expenses</a></li>
+                    <li><a href="{% url 'reports' %}">Reports</a></li>
+                </ul>
+            </nav>
+        </header>
+    {% endblock %}
+    <main>
+        <div class="container">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </main>
+    <footer>
+        <p>&copy; 2026 My Website. All rights reserved.</p>
+    </footer>
+    {% block js_link %}
+    {% endblock %}
+</body>
+</html>
