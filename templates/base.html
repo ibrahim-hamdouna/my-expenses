@@ -6,17 +6,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}My Expenses{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     {% block navbar %}
         <header>
             <nav>
-                <div class="logo"><img src="{% static 'logo.png' %}" alt="logo"></div>
+                <div class="logo">
+                    <i class="fa-solid fa-dollar-sign"></i>
+                    My Expenses
+                </div>
                 <ul>
-                    <li><a href="{% url 'dashboard' %}">Dashboard</a></li>
-                    <li><a href="{% url 'expenses' %}">My Expenses</a></li>
-                    <li><a href="{% url 'reports' %}">Reports</a></li>
+                    <li><a href="{% url 'dashboard' %}"><i class="fa-solid fa-list-ul"></i> Dashboard</a></li>
+                    <li><a href="{% url 'expenses' %}"><i class="fa-solid fa-pen"></i> Expenses</a></li>
+                    <li><a href=''><i class="fa-solid fa-tags"></i> Categories</a></li>
+                    <li><a href="{% url 'reports' %}"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
                 </ul>
             </nav>
         </header>
@@ -27,9 +32,6 @@
             {% endblock %}
         </div>
     </main>
-    <footer>
-        <p>&copy; 2026 My Website. All rights reserved.</p>
-    </footer>
     {% block js_link %}
     {% endblock %}
 </body>

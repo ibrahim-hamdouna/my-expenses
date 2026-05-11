@@ -5,6 +5,7 @@ from .models import Expenses, Category
 from django.contrib.auth import login
 from django.db.models import F, Sum
 from django.utils import timezone
+from datetime import timedelta
 # Create your views here.
 
 class LoginAPIView(APIView):
@@ -36,14 +37,32 @@ class SignupAPIView(APIView):
         
 class DashboardAPIView(APIView):
     def get(self, request):
+
         now = timezone.now().date()
         current_month = now.month
-
         expenses_queryset = Expenses.objects.select_related('category').filter(user=request.user, date__month = current_month)
+        current_month_total = expenses_queryset.aggregate(Sum('amount'))['amount__sum'] or 0
 
-        total_spent = expenses_queryset.aggregate(Sum('amount'))['amount__sum'] or 0
+        last_day_in_last_month = now.replace(day=1) - timedelta(days=1)
+        first_day_in_last_month = last_day_in_last_month.replace(day=1)
+        expenses_queryset_for_last_month = Expenses.objects.filter(user=request.user, date__gte=first_day_in_last_month, date__lte=last_day_in_last_month)
+        previous_month_total = expenses_queryset_for_last_month.aggregate(Sum('amount'))['amount__sum'] or 0
+
+        monthly_spending_diff = current_month_total - previous_month_total
+
+        if previous_month_total > 0:
+            spending_change_percent = round (((current_month_total - previous_month_total) / previous_month_total) * 100, 2)
+        else :
+            spending_change_percent = 0
+
         user_salary = request.user.salary or 0
-        budget_remaining = user_salary - total_spent
+
+        budget_remaining = user_salary - current_month_total
+
+        if user_salary > 0:
+            budget_used = round((current_month_total / user_salary) * 100, 2)
+        else:
+            budget_used = 0
 
         user_categories = expenses_queryset.values(name=F('category__name')).annotate(total=Sum('amount')).order_by('-total')
 
@@ -54,7 +73,7 @@ class DashboardAPIView(APIView):
         for entry in user_categories: 
             name =  entry['name']
             amount = entry['total']
-            ratio = round((float(entry['total']) / float(total_spent)) * 100, 2) if total_spent else 0
+            ratio = round((float(entry['total']) / float(current_month_total)) * 100, 2) if current_month_total else 0
 
             categories_summary.append({
                 'name': name,
@@ -65,8 +84,12 @@ class DashboardAPIView(APIView):
         content = {
             'today': now.strftime("%b %d"),
             'expenses': serializer_expenses.data,
-            'total_spent': total_spent,
+            'current_month_total': current_month_total,
+            'previous_month_total': previous_month_total,
+            'monthly_spending_diff': monthly_spending_diff,
+            'spending_change_percent': spending_change_percent,
             'budget_remaining': budget_remaining,
+            'budget_used': budget_used,
             'categorys':categories_summary, 
         }
         return render(request, 'expenses/dashboard.html', content)
