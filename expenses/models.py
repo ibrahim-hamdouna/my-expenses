@@ -14,6 +14,7 @@ class User(AbstractUser):
         return self.username
 class Category(models.Model):
     name = models.CharField(max_length=100)
+    color = models.CharField(max_length=7, default='#52b788')
     user = models.ForeignKey(
         User, 
         on_delete=models.CASCADE, 

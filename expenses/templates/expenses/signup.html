@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'auth_base.html' %}
 {% load static %}
 {% block title %}
     Signup
@@ -8,41 +8,39 @@
     <link rel="stylesheet" href="{% static 'expenses/css/signup.css' %}">
 {% endblock %}
 
-{% block navbar %}
-{% endblock %}
-
 {% block content %}
-<div class="signup-container">
-    <h2>Create an Account</h2>
-
+<div class="signup-form">
+    <header class="auth-header">
+        <h2 class="auth-title">Get started</h2>
+        <p class="auth-subtitle">Create your free account in seconds.</p>
+    </header>
     <form method="POST">
 
         {% csrf_token %}
+        <div class="full-name">
+            <div class="group_input">
+                <label for="first_name">First Name</label>
+                <input id="first_name" type="text" name="first_name" placeholder="Enter First Name" value="{{ request.POST.first_name|default:'' }}">
 
-        <div class="group_input">
-            <label for="first_name">First Name</label>
-            <input id="first_name" type="text" name="first_name" placeholder="Enter First Name" value="{{ request.POST.first_name|default:'' }}">
+                {% if errors.first_name %}
+                    {% for message in errors.first_name %}
+                        <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                    {% endfor %}
+                {% endif %}
+            </div>
 
-            {% if errors.first_name %}
-                {% for message in errors.first_name %}
-                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
-                {% endfor %}
-            {% endif %}
+            <div class="group_input">
+                <label for="last_name">Last Name</label>
+                <input id="last_name" type="text" name="last_name" placeholder="Enter Last Name" value="{{ request.POST.last_name|default:'' }}">
+            
+                {% if errors.last_name %}
+                    {% for message in errors.last_name %}
+                        <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                    {% endfor %}
+                {% endif %}
 
+            </div>
         </div>
-
-        <div class="group_input">
-            <label for="last_name">Last Name</label>
-            <input id="last_name" type="text" name="last_name" placeholder="Enter Last Name" value="{{ request.POST.last_name|default:'' }}">
-        
-            {% if errors.last_name %}
-                {% for message in errors.last_name %}
-                    <span class="error_message"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
-                {% endfor %}
-            {% endif %}
-
-        </div>
-
         <div class="group_input">
             <label for="username">Username</label>
             <input id="username" type="text" name="username" placeholder="Enter Username" value="{{ request.POST.username|default:'' }}">
@@ -92,15 +90,15 @@
         </div>
 
         {% if errors.non_field_errors %}
-            <div class="alert alert-danger-global">
+            <div class="alert">
                 {% for message in errors.non_field_errors %}
-                    <p>{{ message }}</p>
+                    <p class="msg-error"><i class="fas fa-exclamation-circle"></i> {{ message }}</p>
                 {% endfor %}
             </div>
         {% endif %}
 
-        <input type="submit" value="Register" class="register-btn">
+        <input type="submit" value="Create Account" class="btn-register">
     </form>
-    <p class="login-link">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
+    <p class="login">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 </div>
 {% endblock %}

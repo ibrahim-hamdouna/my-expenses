@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Expenses - {% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/auth_base.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <section class="left-panel">
+        <div class="logo">
+            <span class="logo-icon-box">
+                <i class="fa-solid fa-dollar-sign"></i>
+            </span>
+            My Expenses
+        </div>
+        <div class="hero-content">
+            <div class="hero-tag">Your spending companion</div>
+            <h1 class="hero-heading">
+                Track every
+                <br>
+                <em>dollar,</em>
+                <br>
+                effortlessly.
+            </h1>
+            <div class="hero-sub">
+                Get a clear picture of your finances. Set budgets, categorise spending, and watch your savings grow.
+            </div>
+        </div>
+    </section>
+    <section class="right-panel">
+        <main class="auth">
+            <div class="buttons">
+                <button>Login</button>
+                <button>Create Account</button>
+            </div>
+            {% block content %}
+            {% endblock %}
+        </main>
+    </section>
+    {% block js_link %}
+    {% endblock %}
+</body>
+</html>

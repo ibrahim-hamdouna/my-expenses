@@ -1,0 +1,123 @@
+.signup-form {
+    flex: 1;
+    overflow: auto;
+}
+.signup-form .auth-header .auth-title {
+    margin-bottom: 0.5rem;
+    font-size: 2rem;
+    font-family: 'DM Serif Display', serif;
+}
+
+.signup-form .auth-header .auth-subtitle {
+    color: #5a7a6a;
+    font-size: 0.9rem;
+}
+.signup-form form .full-name {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+.signup-form form .group_input {
+    margin-top: 2rem;
+}
+.signup-form form .group_input label {
+    display: block;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.signup-form form .group_input input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #c3e6cb;
+    transition: border-color 0.2s, transform 0.15s;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    -webkit-transition: border-color 0.2s, transform 0.15s;
+    -moz-transition: border-color 0.2s, transform 0.15s;
+    -ms-transition: border-color 0.2s, transform 0.15s;
+    -o-transition: border-color 0.2s, transform 0.15s;
+}
+.signup-form form .group_input input:hover {
+    border-color: #2d6a4f;
+    background-color: #f5fbf7;
+}
+.signup-form form .group_input input:focus {
+    outline: none;
+}
+.signup-form form .group_input .error_message {
+    display: block;
+    width: fit-content;
+    font-size: 0.7rem;
+    margin-top: 10px;
+    padding: 7px;
+    background-color: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+}
+.signup-form form .alert .msg-error {
+    background-color: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+    width: fit-content;
+    font-size: 0.7rem;
+    padding: 7px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 30px;
+    -webkit-border-radius: 30px;
+    -moz-border-radius: 30px;
+    -ms-border-radius: 30px;
+    -o-border-radius: 30px;
+}
+.signup-form form .btn-register {
+    background-color: #1a3329;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    color: #fff;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 0.8rem;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -ms-border-radius: 10px;
+    -o-border-radius: 10px;
+    -webkit-transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-transition: border-color 0.2s, box-shadow 0.2s;
+    -ms-transition: border-color 0.2s, box-shadow 0.2s;
+    -o-transition: border-color 0.2s, box-shadow 0.2s;
+}
+.signup-form form .btn-register[value='Create Account'] {
+    font-size: 1rem;
+}
+.signup-form form .btn-register:hover {
+    background-color: #2d6a4f;
+}
+.signup-form .login {
+    margin-top: 1.4rem;
+    color: #5a7a6a;
+    text-align: center;
+}
+.signup-form .login a {
+    text-decoration: none;
+    color: #2d6a4f;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .login-form {
+        text-align: center;
+    }
+}

@@ -93,10 +93,11 @@ class SignupSerializer(serializers.ModelSerializer):
 
 class ExpensesSerializer(serializers.ModelSerializer):
     category_name = serializers.StringRelatedField(source='category.name')
+    category_color = serializers.StringRelatedField(source='category.color')
     date = serializers.DateField(format="%b %d")
     class Meta:
         model = Expenses
-        fields = ['description', 'amount',  'date', 'category_name', 'created_at', 'updated_at']
+        fields = ['description', 'amount',  'date', 'category_name', 'category_color', 'created_at', 'updated_at']
     
     def create(self, validate_data):
         user = self.context['request'].user
@@ -109,7 +110,7 @@ class ExpensesSerializer(serializers.ModelSerializer):
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ['name', 'user']
+        fields = ['name', 'color', 'user']
 
 class UserReportSerializer(serializers.ModelSerializer):
     class Meta:

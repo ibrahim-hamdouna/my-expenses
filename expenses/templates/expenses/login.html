@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'auth_base.html' %}
 {% load static %}
 {% block title %}
     Login
@@ -8,38 +8,36 @@
     <link rel="stylesheet" href="{% static 'expenses/css/login.css' %}">
 {% endblock %}
 
-{% block navbar %}
-{% endblock %}
-
 {% block content %}
-<div class="login-container">
-
+<div class="login-form">
+    <header class="auth-header">
+        <h2 class="auth-title">Welcome back</h2>
+        <p class="auth-subtitle">Sign in to your account to continue.</p>
+    </header>
     <form method="POST">
 
         {% csrf_token %}
 
         <div class="group_input">
             <label for="username">Username</label>
-            <input id="username" type="text" name="username" placeholder="Enter Username" value="{{ request.POST.username|default:'' }}">
+            <input id="username" type="text" name="username" placeholder="e.g. ibrahim_mohammed" value="{{ request.POST.username|default:'' }}">
         </div>
 
         <div class="group_input">
             <label for="password">Password</label>
-            <input id="password" type="password" name="password" placeholder="Enter Password">
+            <input id="password" type="password" name="password" placeholder="........">
         </div>
 
         {% if errors.non_field_errors %}
-            <div class="alert alert-danger-global">
+            <div class="alert">
                 {% for message in errors.non_field_errors %}
-                    <p>{{ message }}</p>
+                    <p class="msg-error">{{ message }}</p>
                 {% endfor %}
             </div>
         {% endif %}
 
-        <input type="submit" value="Login" class="login-btn">
+        <input type="submit" value="Login" class="btn-login">
     </form>
-
     <p class="signup">Don't have an account? <a href="{% url 'signup' %}">Signup here</a></p>
-    
 </div>
 {% endblock %}

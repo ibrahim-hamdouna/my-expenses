@@ -40,8 +40,8 @@ class DashboardAPIView(APIView):
 
         now = timezone.now().date()
         current_month = now.month
-        expenses_queryset = Expenses.objects.select_related('category').filter(user=request.user, date__month = current_month)
-        current_month_total = expenses_queryset.aggregate(Sum('amount'))['amount__sum'] or 0
+        expenses_queryset_for_current_month = Expenses.objects.select_related('category').filter(user=request.user, date__month = current_month).order_by('-date')
+        current_month_total = expenses_queryset_for_current_month.aggregate(Sum('amount'))['amount__sum'] or 0
 
         last_day_in_last_month = now.replace(day=1) - timedelta(days=1)
         first_day_in_last_month = last_day_in_last_month.replace(day=1)
@@ -64,26 +64,28 @@ class DashboardAPIView(APIView):
         else:
             budget_used = 0
 
-        user_categories = expenses_queryset.values(name=F('category__name')).annotate(total=Sum('amount')).order_by('-total')
+        user_categories = expenses_queryset_for_current_month.values(name=F('category__name'), color=F('category__color')).annotate(total=Sum('amount')).order_by('-total')
 
-        serializer_expenses = ExpensesSerializer(expenses_queryset, many=True)
+        serializer_expenses_for_current_month = ExpensesSerializer(expenses_queryset_for_current_month, many=True)
 
         categories_summary = []
 
         for entry in user_categories: 
             name =  entry['name']
+            color = entry['color']
             amount = entry['total']
             ratio = round((float(entry['total']) / float(current_month_total)) * 100, 2) if current_month_total else 0
 
             categories_summary.append({
                 'name': name,
+                'color': color,
                 'amount': amount,
                 'ratio': ratio,
             })
 
         content = {
             'today': now.strftime("%b %d"),
-            'expenses': serializer_expenses.data,
+            'expenses': serializer_expenses_for_current_month.data,
             'current_month_total': current_month_total,
             'previous_month_total': previous_month_total,
             'monthly_spending_diff': monthly_spending_diff,

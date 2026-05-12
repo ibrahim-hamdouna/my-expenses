@@ -21,17 +21,17 @@
             <div class="stat">
                 <div class="stat-label">This Month</div>
                 <div class="stat-value">${{ current_month_total }}</div>
-                <div class="stat-more"><span class="ratio">${{ monthly_spending_diff }}</span> vs last month</div> 
+                <div class="stat-more">${{ monthly_spending_diff }} vs last month</div> 
             </div>
             <div class="stat">
                 <div class="stat-label">Budget remaining:</div>
                 <div class="stat-value">${{ budget_remaining }}</div>
-                <div class="stat-more"><span class="ratio">{{ budget_used }}</span>% of budget used</div> 
+                <div class="stat-more">{{ budget_used }}% of budget used</div> 
             </div>
             <div class="stat">
                 <div class="stat-label">Last Month</div>
                 <div class="stat-value">${{ previous_month_total }}</div>
-                <div class="stat-more"><span class="ratio">{{ spending_change_percent }}</span>% vs prior month</div> 
+                <div class="stat-more">{{ spending_change_percent }}% vs prior month</div> 
             </div>
             <div class="stat">
                 <div class="stat-label">Transactions:</div>
@@ -43,39 +43,48 @@
             <div class="category-breakdown">
                 <h3>Category Breakdown</h3>
                 <div class="categorys">
-                    {% for data in categorys %}
+                    {% for category in categorys %}
                         <div class="category">
-                            <span class="point"></span>
-                            <p class="text">{{ data.name }}</p>
-                            <span class="progress-ratio">
-                                <span class="progress"></span>
-                                <span class="ratio">{{ data.ratio | floatformat:1 }}%</span>
-                            </span>
-                            <span class="total-category">$ {{ data.amount|floatformat:2 }}</span>
+                            <div class="left-side">
+                                <span class="point" style="background-color: {{ category.color }}"></span>
+                                <span class="category-name" style="color: {{ category.color }};">{{ category.name }}</span>
+                            </div>
+                            <div class="right-side">
+                                <span class="progress-container">
+                                    <span class="progress-bar" style="background-color: {{ category.color }}; width: {{ category.ratio }}%;"></span>
+                                </span>
+                                <span class="ratio">{{ category.ratio | floatformat:1 }}%</span> 
+                                <span class="total-category">${{ category.amount | floatformat:2 }}</span>
+                            </div>
                         </div>
                     {% endfor %}
                 </div>
             </div>
             <div class="recent-transactions">
-                <h3>Recent Expenses</h3>
+                <div class="header">
+                    <h3>Recent Expenses</h3>
+                    <button class="btn-view-all">View All</button>
+                </div>
                 <div class="expenses">
                     {% for expense in expenses %}
                         <div class="expense">
-                            <div class="text">
-                                <span class="point"></span>
-                                <div class="details">
+                            <div class="left-side">
+                                <span class="point" style="background-color: {{ expense.category_color}}"></span>
+                                <div class="data">
                                     <span class="description">{{ expense.description }}</span>
-                                    <span class="category">{{ expense.category_name }}</span>
-                                    <span class="date">
-                                        {% if expense.date == today %} 
-                                            <span class="today-label">Today</span> 
-                                        {% else %} 
-                                            {{ expense.date }} 
-                                        {% endif %}
-                                    </span>
+                                    <div class="details">
+                                        <span class="category">{{ expense.category_name }},</span>
+                                        <span class="date">
+                                            {% if expense.date == today %} 
+                                                <span class="today-label">Today</span> 
+                                            {% else %} 
+                                                {{ expense.date }} 
+                                            {% endif %}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                            <p class="amount">${{ expense.amount|floatformat:2}}</p>
+                            <div class="right-side">${{ expense.amount|floatformat:2}}</div>
                         </div>
                     {% endfor %}
                 </div>
