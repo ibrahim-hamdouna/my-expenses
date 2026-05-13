@@ -1,3 +1,4 @@
+/* Start Login Form */
 .login-form {
     flex: 1;
     overflow: hidden;
@@ -97,8 +98,11 @@
     font-weight: 500;
     cursor: pointer;
 }
+/* End Login Form */
+/* Start Mobile Screen */
 @media (max-width: 768px) {
     .login-form {
         text-align: center;
     }
 }
+/* End Mobile Screen */

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Categories
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'expenses/css/categories.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="categories-container">
+    <div class="head">
+        <div class="text">
+            <h2>Categories</h2>
+            <h3>Organise your spending</h3>
+        </div>
+        <button class="btn-add">+ Add Category</button>
+    </div>
+    <div class="categories">
+        {% for category in expenses_per_category %}
+            <div class="category">
+                <div class="point" style="background-color: {{ category.color }}33;">
+                    <div class="inner-dot" style="background-color: {{ category.color }};"></div>
+                </div>
+                <div class="details">
+                    <div class="name">{{ category.name }}</div>
+                    <div class="details-expenses">
+                        ${{ category.total_expenses }}, {{ category.num_expenses }} expenses
+                    </div>
+                </div>
+                <div class="line" style="background-color: {{ category.color }};"></div>
+                <div class="buttons">
+                    <button class="btn-edit">Edit</button>
+                    <button class="btn-delete">Delete</button>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

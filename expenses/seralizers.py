@@ -1,30 +1,31 @@
 from django.contrib.auth import authenticate, get_user_model
-from .models import Expenses, Category, UserReport
+from .models import User, Expenses, Categories, UserReport
 from rest_framework import serializers   
 
 User = get_user_model()
 
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField()
-    password = serializers.CharField(write_only=True)
+    username = serializers.CharField(
+        required=True,
+        error_messages={
+            'blank': 'Please enter your username.'
+        }
+    )
+    password = serializers.CharField(write_only=True, 
+        required=True,
+        error_messages={
+            'blank': 'Please enter your password.'
+        }
+    )
 
     def validate(self, data):
         username = data.get('username')
         password = data.get('password')
 
-        if not username:
-            raise serializers.ValidationError("Please enter your username.")
-        
-        if not password:
-            raise serializers.ValidationError("Please enter your password.")
-
         user = authenticate(username = username, password = password)
-
-        if not user:
-            raise serializers.ValidationError("Username or password is incorrect.")
         
-        if not user.is_active:
-            raise serializers.ValidationError("This account has been disabled.")
+        if user is None:
+            raise serializers.ValidationError("Username or password is incorrect.")
         
         data['user'] = user
         
@@ -97,7 +98,7 @@ class ExpensesSerializer(serializers.ModelSerializer):
     date = serializers.DateField(format="%b %d")
     class Meta:
         model = Expenses
-        fields = ['description', 'amount',  'date', 'category_name', 'category_color', 'created_at', 'updated_at']
+        fields = ['description', 'amount',  'date', ' category_name', ' category_color', 'created_at', 'updated_at']
     
     def create(self, validate_data):
         user = self.context['request'].user
@@ -107,9 +108,9 @@ class ExpensesSerializer(serializers.ModelSerializer):
     # def validate(self, attrs):
     #     return super().validate(attrs)
 
-class CategorySerializer(serializers.ModelSerializer):
+class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Category
+        model = Categories
         fields = ['name', 'color', 'user']
 
 class UserReportSerializer(serializers.ModelSerializer):

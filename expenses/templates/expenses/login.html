@@ -1,5 +1,6 @@
 {% extends 'auth_base.html' %}
 {% load static %}
+<!--  -->
 {% block title %}
     Login
 {% endblock %}
@@ -14,20 +15,33 @@
         <h2 class="auth-title">Welcome back</h2>
         <p class="auth-subtitle">Sign in to your account to continue.</p>
     </header>
-    <form method="POST">
+    <form action="{% url 'login' %}" method="POST" autocomplete="off">
 
         {% csrf_token %}
 
         <div class="group_input">
             <label for="username">Username</label>
             <input id="username" type="text" name="username" placeholder="e.g. ibrahim_mohammed" value="{{ request.POST.username|default:'' }}">
+            {% if errors.username %}
+                <div class="alert">
+                    {% for message in errors.username %}
+                        <p class="msg-error">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
 
         <div class="group_input">
             <label for="password">Password</label>
-            <input id="password" type="password" name="password" placeholder="........">
+            <input id="password" type="password" name="password" placeholder=".......">
+            {% if errors.password %}
+                <div class="alert">
+                    {% for message in errors.password %}
+                        <p class="msg-error">{{ message }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
-
         {% if errors.non_field_errors %}
             <div class="alert">
                 {% for message in errors.non_field_errors %}

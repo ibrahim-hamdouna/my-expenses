@@ -1,3 +1,4 @@
+/* Start Signup Form */
 .signup-form {
     flex: 1;
     overflow: auto;
@@ -115,9 +116,11 @@
     font-weight: 500;
     cursor: pointer;
 }
-
+/* End Signup Form */
+/* Start Mobile Screen */
 @media (max-width: 768px) {
     .login-form {
         text-align: center;
     }
 }
+/* End Mobile Screen */

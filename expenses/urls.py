@@ -1,4 +1,4 @@
-from .views import LoginAPIView, SignupAPIView, DashboardAPIView, ExpensesAPIView, ReportsAPIView
+from .views import LoginAPIView, SignupAPIView, DashboardAPIView, ExpensesAPIView, CategoriesAPIView, ReportsAPIView
 from django.urls import path
 
 urlpatterns = [
@@ -7,7 +7,8 @@ urlpatterns = [
     path('dashboard/', DashboardAPIView.as_view(), name='dashboard'),
     path('expenses/', ExpensesAPIView.as_view(), name='expenses'),
     path('add-expenses/', ExpensesAPIView.as_view(), name='add-expenses'),
-    path('reports/', ReportsAPIView.as_view(), name='reports')
+    path('categories/', CategoriesAPIView.as_view(), name='categories'),
+    path('reports/', ReportsAPIView.as_view(), name='reports'),
 ]
 
 

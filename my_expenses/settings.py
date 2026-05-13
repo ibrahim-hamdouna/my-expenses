@@ -131,3 +131,27 @@ STATICFILES_DIRS = [
 ]
 
 AUTH_USER_MODEL = 'expenses.User'
+
+REST_FRAMEWORK = {
+    # 1. Access Control
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+    
+    # 2. Identity Verification
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+    ],
+
+    # 3. Data Formatting
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.TemplateHTMLRenderer', 
+        'rest_framework.renderers.JSONRenderer',
+        # 'rest_framework.renderers.BrowsableAPIRenderer',
+    ],
+    
+}
+
+LOGIN_URL = 'login/'
+LOGIN_REDIRECT_URL = 'dashboard/'

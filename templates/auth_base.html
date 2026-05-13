@@ -5,11 +5,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Expenses - {% block title %}{% endblock %}</title>
+    <!-- Link File CSS For auth-base.html -->
     <link rel="stylesheet" href="{% static 'css/auth_base.css' %}">
+    <!-- Link Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link File CSS For Child  -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
+    <!-- Start Left Panel -->
     <section class="left-panel">
         <div class="logo">
             <span class="logo-icon-box">
@@ -31,6 +35,8 @@
             </div>
         </div>
     </section>
+    <!-- End Left Panel -->
+    <!-- Start Right Panel -->
     <section class="right-panel">
         <main class="auth">
             <div class="buttons">
@@ -41,6 +47,8 @@
             {% endblock %}
         </main>
     </section>
+    <!-- End Right Panel -->
+    <!-- Link File Javascript -->
     {% block js_link %}
     {% endblock %}
 </body>

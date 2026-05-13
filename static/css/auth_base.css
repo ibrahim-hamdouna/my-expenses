@@ -13,6 +13,7 @@ body {
     background: var(--body-bg-color);
     min-height: 100vh;
 }
+/* Start Left Panel */
 .left-panel {
     position: sticky;
     top: 0;
@@ -20,7 +21,7 @@ body {
     background-color: #1a3329;
     display: flex;
     flex-direction: column;
-    gap: 4rem;
+    gap: 2rem;
     padding: 3rem;
 }
 .left-panel .logo {
@@ -75,6 +76,8 @@ body {
     line-height: 1.6; 
     opacity: 0.9;
 }
+/* End Left Panel */
+/* Start Rigth Panel */
 .right-panel {
     display: flex;    
     flex-direction: column;
@@ -112,6 +115,8 @@ body {
     -ms-border-radius: 7px;
     -o-border-radius: 7px;
 }
+/* End Left Panel */
+/* Start Mobil Screen */
 @media (max-width: 768px) {
     html {
         font-size: 13px;
@@ -128,3 +133,4 @@ body {
         overflow: auto;
     }
 }
+/* End Mobil Screen */
