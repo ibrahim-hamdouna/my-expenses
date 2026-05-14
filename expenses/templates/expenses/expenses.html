@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block title %}
-    Expenses 
+    Expenses
 {% endblock %}
 
 {% block extra_css %}
@@ -9,59 +9,59 @@
 {% endblock %}
 
 {% block content %}
-    <div class="expenses-container">
-        <div class="header">
-            <div class="text">
-                <h2>Expenses</h2>
-                <h3>Total: ${{ total_spent }}</h3>
-            </div>
-            <div class="btn-add-expense">
-                <a rel="stylesheet" href="{% url 'add-expenses' %}">+ Add Expense</a>
-            </div>
+<div class="expenses-container">
+    <div class="head">
+        <div class="text">
+            <h2 class="title">Expenses</h2>
+            <h3 class="subtitle">Total: $<span class="total">{{ total_spent }}</span></h3>
         </div>
-        <div class="filter">
-            <form>
-                {% csrf_token %}
+        <button class="btn-add">+ Add Expense</button>
+    </div>
+    <div class="expenses">
+        <div class="filter-wrapper">
+            <form action="{% url 'expenses' %}" method="POST">
                 <div class="group-input">
-                    <div class="date">
-                        <label for="date">Date</label>
-                        <input id="date" type="date" name="date" placeholder="Enter Date">
-                    </div>
+                    <label for="date">Month</label>
+                    <input id="date" class="date" type="date">
                 </div>
                 <div class="group-input">
-                    <label for="categories">Category</label>
+                    <label for="categories">Categories</label>
                     <select id="categories">
-                        <option>ALL Categories</option>
-                        {% for category in categories %}
-                            <option>{{ category.name }}</option>
+                        <option>All categories</option>
+                        {% for expense in expenses %}
+                            <option>{{ expense.category.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <button id="btn-filter" title="Filter Expenses">Filter</button>
-                <button id="btn-clear" title ="Clear Filter">Clear</button>
+                <div class="buttons">
+                    <button class="btn-filter">Filter</button>
+                    <button class="btn-clear">Clear</button>
+                </div>
             </form>
         </div>
-        <div class="exoenses">
+        <div class="table-wrapper">
             <table>
                 <thead>
                     <tr>
-                        <td>Description</td>
-                        <td>Category</td>
-                        <td>Date</td>
-                        <td>Amount</td>
-                        <td>Actions</td>
+                        <th>description</th>
+                        <th>category</th>
+                        <th>date</th>
+                        <th>amount</th>
+                        <th class="actions">actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for expense in expenses %}
                         <tr>
-                            <td>{{ expense.description }}</td>
-                            <td>{{ expense.category_name }}</td>
-                            <td>{{ expense.date }}</td>
-                            <td>{{ expense.amount }}</td>
-                            <td>
-                                <button id="btn-edit" title="Edit Expense">Edit</button>
-                                <button id="btn-delete" title="Delete Expense">Delete</button>
+                            <td class="td-description">{{ expense.description }}</td>
+                            <td class="td-name">
+                                <span style="background-color: {{ expense.category.color }}33; color: {{ expense.category.color }}; border-color: {{ expense.category.color }}">{{ expense.category.name }}</span>
+                            </td>
+                            <td class="td-date">{{ expense.date }}</td>
+                            <td class="td-amount">${{ expense.amount }}</td>
+                            <td class="td-buttons">
+                                <button class="btn-edit">Edit</button>
+                                <button class="btn-delete">Delete</button>
                             </td>
                         </tr>
                     {% endfor %}
@@ -69,7 +69,5 @@
             </table>
         </div>
     </div>
-{% endblock %}
-{% block js_link %}
-    <link rel="stylesheet" href="{% static 'expenses/js/expenses.js' %}">
+</div>
 {% endblock %}

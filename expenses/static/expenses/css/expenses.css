@@ -1,0 +1,199 @@
+:root {
+    --primary-color: #1B4332;
+    --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+}
+.expenses-container {
+    padding: 2rem;
+}
+.expenses-container .head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+.expenses-container .head h3 {
+    color: #6B7280;
+    font-weight: normal;
+}
+.expenses-container .head h3 .total {
+    font-weight: bold;
+}
+.expenses-container .head .btn-add {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+}
+.expenses-container .head .btn-add:hover {
+    background-color: #52b788;
+    transition: all 0.3s;
+}
+.expenses-container .expenses form {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    gap: 1.2rem;
+    padding: 1rem;
+    background-color: #FFFFFF;
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.expenses-container .expenses form .group-input {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 7px;
+}
+.expenses-container .expenses form .group-input label {
+    color: #374151;
+    font-size: 1rem;
+    font-weight: 500px;
+}
+.expenses-container .expenses form .group-input input {
+    color: #111827;
+    font-size: 1rem;
+    border: 1.5px solid #E5E7EB;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+.expenses-container .expenses form .group-input select {
+     color: #111827;
+    font-size: 1rem;
+    border: 1.5px solid #E5E7EB;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+.expenses-container .expenses form .buttons button {
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size:  0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .15s;
+    gap: 6px;
+    white-space: nowrap; 
+}
+.expenses-container .expenses form .buttons .btn-filter {
+    background-color: #E5E7EB;
+}
+.expenses-container .expenses form .buttons .btn-filter:hover {
+    background-color: #E5E7EB;
+    filter: brightness(0.95);
+}
+.expenses-container .expenses form .buttons .btn-clear {
+    background-color: transparent;
+    border: 1px solid #E5E7EB;
+}
+.expenses-container .expenses form .buttons .btn-clear:hover {
+    background-color: #F3F4F6;
+}
+.expenses-container .expenses table {
+    background-color: #FFFFFF;
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+    border-collapse: collapse;
+}
+.expenses-container .expenses .table-wrapper table thead tr th {
+    color: #6B7280;
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid #E5E7EB;
+    text-transform: uppercase;
+    padding: 0.8rem 1.3rem;
+    text-align: left;
+}
+.expenses-container .expenses .table-wrapper table thead tr .actions {
+    text-align: center;
+} 
+.expenses-container .expenses .table-wrapper table tbody tr {
+    vertical-align: middle;
+}
+.expenses-container .expenses .table-wrapper table tbody tr td {
+    padding: 0.8rem 1.3rem;
+    border-bottom: 1px solid #F3F4F6;
+    font-size: 0.9rem;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-description {
+    font-weight: 600;
+    white-space: nowrap;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-name span {
+    border-width: 1px;
+    border-style: solid;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 3px 10px;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-date{
+    color: #6B7280;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-amount {
+    font-weight: 700;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-buttons {
+    text-align: center;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-buttons button {
+    display: inline-block;
+    padding: 5px 12px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border-radius: 8px;
+    text-decoration: none;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-buttons .btn-edit{
+    background-color: white;
+    color: black;
+    border: 1px solid #E5E7EB;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-buttons .btn-edit:hover {
+    background-color: #E5E7EB;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-buttons .btn-delete {
+    color: #DC2626;
+    border: none;
+    outline: none;
+    background-color: transparent;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-buttons .btn-delete:hover {
+    background-color: #FEF2F2;
+}
+/* Start Mobile Screen */
+@media (max-width: 768px) {
+    .expenses-container {
+            text-align: center;
+        }
+    .expenses-container .head {
+        flex-direction: column;
+        justify-content: center;
+        gap: 1.7rem;
+    }
+    .expenses-container .expenses form {
+        flex-direction: column;
+        justify-content: flex-end;
+        text-align: left;
+    }
+    .expenses-container .expenses form div {
+        width: 100%;
+    }
+    .expenses-container .expenses form .buttons {
+        text-align: center;
+    }
+    .expenses-container .expenses .table-wrapper {
+        overflow-x: auto;
+    }
+    .expenses-container .expenses .table-wrapper table tbody tr .td-buttons button {
+        margin-bottom: 5px;
+    }
+}
+/* End Mobile Screen */

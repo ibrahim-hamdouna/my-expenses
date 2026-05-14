@@ -3,6 +3,7 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny
 from django.shortcuts import render, redirect
+from rest_framework import response
 from rest_framework.views import APIView
 from .models import Expenses, Categories
 from django.contrib.auth import login
@@ -109,22 +110,17 @@ class DashboardAPIView(APIView):
         return render(request, 'expenses/dashboard.html', content)
     
 class ExpensesAPIView(APIView):
-    def get(self, request):
-        expenses_queryset = Expenses.objects.filter(user=request.user)
-        # total_spent = expenses_queryset.aaggregate(Sum('amount'))['amount__sum'] or 0
-        expenses_serializer = ExpensesSerializer(expenses_queryset, many=True)
-        
-        categories_queryset = Categories.objects.filter(user=request.user)
-        categories_serializer = CategoriesSerializer(categories_queryset, many=True)
+    def get(self, request, pk = None):
+        expenses_queryset = Expenses.objects.filter(user=request.user).order_by('-date')
+        total_spent = expenses_queryset.aggregate(Sum('amount'))['amount__sum'] or 0
         content = {
-            'expenses': expenses_serializer.data,
-            'categories': categories_serializer.data,
-            # 'total_spent': total_spent,
+            'total_spent': total_spent,
+            'expenses': expenses_queryset,
         }
         return render(request, 'expenses/expenses.html', content)     
 
 class CategoriesAPIView(APIView):
-    def get(self, request):
+    def get(self, request, pk = None):
         now = timezone.now().date()
         expenses_per_category = Categories.objects.filter(user=request.user).annotate(
             total_expenses = Coalesce(
@@ -135,11 +131,16 @@ class CategoriesAPIView(APIView):
                     Count('expenses__id',filter=Q(expenses__date__year=now.year, expenses__date__month=now.month)), 
                     Value(0)
             )
-        ).values('name', 'color', 'total_expenses', 'num_expenses')
+        ).values('id', 'name', 'color', 'total_expenses', 'num_expenses')
         content = {
             'expenses_per_category': expenses_per_category,
         }
         return render(request, 'expenses/categories.html', content)
+    
+    def delete(self, request, pk):
+        category = Categories.objects.get(pk=pk, user=request.user)
+        category.delete()
+        return redirect('categories')
 
 class ReportsAPIView(APIView):
     def get(self, request):

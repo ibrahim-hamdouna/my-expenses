@@ -62,8 +62,11 @@ main {
     flex: 1;
 }
 @media (max-width: 768px) {
+    html {
+        font-size: 13px;
+    }
     header {
-        padding: 5px;
+        padding: 10px 5px;
     }
     header nav .logo,
     header nav ul li a {
