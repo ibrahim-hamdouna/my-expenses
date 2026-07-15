@@ -60,6 +60,31 @@ header nav ul li a i {
 }
 main {
     flex: 1;
+    min-width: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+.page-content {
+    flex: 1;
+}
+.site-footer {
+    padding: 1rem 1.5rem;
+    color: #6B7280;
+    font-size: 0.85rem;
+    text-align: center;
+}
+.site-footer span {
+    color: var(--primary-color);
+    font-weight: 700;
+}
+.site-footer a {
+    color: var(--primary-color);
+    font-weight: 600;
+    text-decoration: none;
+}
+.site-footer a:hover {
+    text-decoration: underline;
 }
 @media (max-width: 768px) {
     html {

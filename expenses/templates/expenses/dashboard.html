@@ -69,11 +69,11 @@
                     {% for expense in expenses %}
                         <div class="expense">
                             <div class="left-side">
-                                <span class="point" style="background-color: {{ expense.category_color}}"></span>
+                                <span class="point" style="background-color: {% if expense.category %}{{ expense.category.color }}{% else %}#6B7280{% endif %};"></span>
                                 <div class="data">
                                     <span class="description">{{ expense.description }}</span>
                                     <div class="details">
-                                        <span class="category">{{ expense.category_name }},</span>
+                                        <span class="category">{% if expense.category %}{{ expense.category.name }}{% else %}No category{% endif %},</span>
                                         <span class="date">
                                             {% if expense.date == today %} 
                                                 <span class="today-label">Today</span> 

@@ -3,6 +3,7 @@ from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny
 from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse
 from rest_framework import response
 from rest_framework.views import APIView
 from .models import Expenses, Categories
@@ -10,8 +11,10 @@ from django.contrib.auth import login
 from django.db.models import F, Sum, Count, Q, Value
 from django.db.models.functions import Coalesce
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from datetime import timedelta
 from decimal import Decimal
+from .report_exports import create_excel_report, create_pdf_report
 # Create your views here.
 
 @method_decorator(never_cache, name='dispatch')
@@ -84,8 +87,8 @@ class DashboardAPIView(APIView):
         categories_summary = []
 
         for entry in user_categories: 
-            name =  entry['name']
-            color = entry['color']
+            name = entry['name'] or 'No category'
+            color = entry['color'] or '#6B7280'
             amount = entry['total']
             ratio = round((float(entry['total']) / float(current_month_total)) * 100, 2) if current_month_total else 0
 
@@ -254,8 +257,52 @@ class CategoriesAPIView(APIView):
 
 class ReportsAPIView(APIView):
     def get(self, request):
-        return render(request, 'expenses/reports.html')
-    
-    # def post(self, request):
-    #     serializer = ExpensesAPIView(data=request.data)
-    #     serializer.save()
+        categories = Categories.objects.filter(user=request.user).order_by('name')
+        expenses = Expenses.objects.select_related('category').filter(user=request.user).order_by('-date')
+        start_value = request.GET.get('start_date', '')
+        end_value = request.GET.get('end_date', '')
+        category_value = request.GET.get('category', '')
+        start_date = parse_date(start_value) if start_value else None
+        end_date = parse_date(end_value) if end_value else None
+        errors = []
+
+        if start_value and not start_date:
+            errors.append('Please enter a valid start date.')
+        if end_value and not end_date:
+            errors.append('Please enter a valid end date.')
+        if start_date and end_date and start_date > end_date:
+            errors.append('The start date cannot be after the end date.')
+        if start_date:
+            expenses = expenses.filter(date__gte=start_date)
+        if end_date:
+            expenses = expenses.filter(date__lte=end_date)
+        if category_value:
+            if category_value.isdigit() and categories.filter(pk=category_value).exists():
+                expenses = expenses.filter(category_id=category_value)
+            else:
+                errors.append('Please select one of your categories.')
+
+        total = expenses.aggregate(Sum('amount'))['amount__sum'] or Decimal('0.00')
+        export_format = request.GET.get('export')
+        if export_format in ('pdf', 'excel') and not errors:
+            expense_list = list(expenses)
+            filename = f"expenses-report-{timezone.now().date()}"
+            if export_format == 'pdf':
+                content = create_pdf_report(expense_list, total, start_date, end_date)
+                response = HttpResponse(content, content_type='application/pdf')
+                response['Content-Disposition'] = f'attachment; filename="{filename}.pdf"'
+            else:
+                content = create_excel_report(expense_list, total)
+                response = HttpResponse(content, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                response['Content-Disposition'] = f'attachment; filename="{filename}.xlsx"'
+            return response
+
+        return render(request, 'expenses/reports.html', {
+            'expenses': expenses,
+            'categories': categories,
+            'total': total,
+            'errors': errors,
+            'selected_start_date': start_value,
+            'selected_end_date': end_value,
+            'selected_category': category_value,
+        }, status=400 if errors else 200)

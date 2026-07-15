@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Reports{% endblock %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'expenses/css/reports.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="reports-container">
+    <div class="head">
+        <div>
+            <h2>Expense Reports</h2>
+            <p>Filter your expenses, then download the report.</p>
+        </div>
+        <div class="export-buttons">
+            <button form="report-filters" name="export" value="pdf" class="btn-pdf">Export PDF</button>
+            <button form="report-filters" name="export" value="excel" class="btn-excel">Export Excel</button>
+        </div>
+    </div>
+
+    <form id="report-filters" action="{% url 'reports' %}" method="GET" class="filters">
+        <div class="group-input">
+            <label for="start-date">Start date</label>
+            <input id="start-date" type="date" name="start_date" value="{{ selected_start_date }}">
+        </div>
+        <div class="group-input">
+            <label for="end-date">End date</label>
+            <input id="end-date" type="date" name="end_date" value="{{ selected_end_date }}">
+        </div>
+        <div class="group-input">
+            <label for="report-category">Category</label>
+            <select id="report-category" name="category">
+                <option value="">All categories</option>
+                {% for category in categories %}
+                    <option value="{{ category.id }}" {% if selected_category == category.id|stringformat:'s' %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="filter-buttons">
+            <button type="submit" class="btn-filter">Apply filters</button>
+            <a href="{% url 'reports' %}" class="btn-clear">Clear</a>
+        </div>
+    </form>
+
+    {% if errors %}
+        <div class="report-errors">
+            {% for error in errors %}<p>{{ error }}</p>{% endfor %}
+        </div>
+    {% endif %}
+    <div class="summary">Total: <strong>${{ total|floatformat:2 }}</strong></div>
+    <div class="table-wrapper">
+        <table>
+            <thead><tr><th>Description</th><th>Category</th><th>Date</th><th>Amount</th></tr></thead>
+            <tbody>
+                {% for expense in expenses %}
+                    <tr>
+                        <td>{{ expense.description|default:'-' }}</td>
+                        <td>{% if expense.category %}{{ expense.category.name }}{% else %}No category{% endif %}</td>
+                        <td>{{ expense.date }}</td>
+                        <td>${{ expense.amount|floatformat:2 }}</td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="empty">No expenses match these filters.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

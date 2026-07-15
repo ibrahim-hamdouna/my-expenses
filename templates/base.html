@@ -27,8 +27,14 @@
         </header>
     {% endblock %}
     <main>
-        {% block content %}
-        {% endblock %}
+        <div class="page-content">
+            {% block content %}
+            {% endblock %}
+        </div>
+        <footer class="site-footer">
+            <span>My Expenses</span> · Developed by
+            <a href="https://github.com/ibrahim-hamdouna" target="_blank" rel="noopener noreferrer">Ibrahim Hamdouna</a>
+        </footer>
     </main>
     {% block js_link %}
     {% endblock %}
