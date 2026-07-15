@@ -23,10 +23,7 @@
     cursor: pointer;
     border: none;
     border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
+    text-decoration: none;
 }
 .expenses-container .head .btn-add:hover {
     background-color: #52b788;

@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'my_expenses.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'my_expenses',     
+        'NAME': 'my_expenses_db',     
         'USER': 'root',               
         'PASSWORD': '2003',  
         'HOST': '127.0.0.1',          

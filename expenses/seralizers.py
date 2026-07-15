@@ -1,7 +1,7 @@
 from django.contrib.auth import authenticate, get_user_model
-from .models import User, Expenses, Categories, UserReport
+from .models import Expenses, Categories, UserReport
 from rest_framework import serializers   
-
+from django.utils import timezone
 User = get_user_model()
 
 class LoginSerializer(serializers.Serializer):
@@ -11,7 +11,8 @@ class LoginSerializer(serializers.Serializer):
             'blank': 'Please enter your username.'
         }
     )
-    password = serializers.CharField(write_only=True, 
+    password = serializers.CharField(
+        write_only=True, 
         required=True,
         error_messages={
             'blank': 'Please enter your password.'
@@ -93,20 +94,34 @@ class SignupSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**validated_data)
 
 class ExpensesSerializer(serializers.ModelSerializer):
-    category_name = serializers.StringRelatedField(source='category.name')
-    category_color = serializers.StringRelatedField(source='category.color')
+    category_name = serializers.StringRelatedField(
+        source='category.name',
+        read_only=True,
+        allow_null=True,
+    )
+    category_color = serializers.StringRelatedField(
+        source='category.color',
+        read_only=True,
+        allow_null=True,
+    )
     date = serializers.DateField(format="%b %d")
     class Meta:
         model = Expenses
-        fields = ['description', 'amount',  'date', ' category_name', ' category_color', 'created_at', 'updated_at']
+        fields = ['description', 'amount',  'date', 'category', 'category_name', 'category_color', 'created_at', 'updated_at']
     
     def create(self, validate_data):
-        user = self.context['request'].user
-        validate_data['user'] = user
-        return super().create(**validate_data)
+        validate_data['user'] = self.context['request'].user
+        return super().create(validate_data)
     
-    # def validate(self, attrs):
-    #     return super().validate(attrs)
+    def validate_date(self, value):
+        if value > timezone.now().date():
+            raise serializers.ValidationError("The expense date cannot be in the future.")
+        return value
+
+    def validate_category(self, value):
+        if value and value.user != self.context['request'].user:
+            raise serializers.ValidationError("Please select one of your categories.")
+        return value
 
 class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:

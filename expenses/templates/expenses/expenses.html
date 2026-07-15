@@ -15,27 +15,27 @@
             <h2 class="title">Expenses</h2>
             <h3 class="subtitle">Total: $<span class="total">{{ total_spent }}</span></h3>
         </div>
-        <button class="btn-add">+ Add Expense</button>
+        <a class="btn-add" href="{% url 'add-expense' %}">+ Add Expense</a>
     </div>
     <div class="expenses">
         <div class="filter-wrapper">
-            <form action="{% url 'expenses' %}" method="POST">
+            <form action="{% url 'expenses' %}" method="GET">
                 <div class="group-input">
-                    <label for="date">Month</label>
-                    <input id="date" class="date" type="date">
+                    <label for="month">Month</label>
+                    <input id="month" name="date" class="month" type="month">
                 </div>
                 <div class="group-input">
                     <label for="categories">Categories</label>
-                    <select id="categories">
-                        <option>All categories</option>
-                        {% for expense in expenses %}
-                            <option>{{ expense.category.name }}</option>
+                    <select id="categories" name="category">
+                        <option value="">All categories</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
                 <div class="buttons">
-                    <button class="btn-filter">Filter</button>
-                    <button class="btn-clear">Clear</button>
+                    <button type="submit" class="btn-filter">Filter</button>
+                    <a href="{% url 'expenses' %}" class="btn-clear">Clear</a>
                 </div>
             </form>
         </div>
@@ -52,16 +52,57 @@
                 </thead>
                 <tbody>
                     {% for expense in expenses %}
-                        <tr>
+                        <tr id="expense-{{ expense.id }}">
                             <td class="td-description">{{ expense.description }}</td>
                             <td class="td-name">
-                                <span style="background-color: {{ expense.category.color }}33; color: {{ expense.category.color }}; border-color: {{ expense.category.color }}">{{ expense.category.name }}</span>
+                                {% if expense.category %}
+                                    <span style="
+                                        background-color: {{ expense.category.color }}33;
+                                        color: {{ expense.category.color }};
+                                        border-color: {{ expense.category.color }}
+                                    ">
+                                        {{ expense.category.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="no-category">No category</span>
+                                {% endif %}
                             </td>
                             <td class="td-date">{{ expense.date }}</td>
                             <td class="td-amount">${{ expense.amount }}</td>
                             <td class="td-buttons">
-                                <button class="btn-edit">Edit</button>
-                                <button class="btn-delete">Delete</button>
+                                <button type="button" class="btn-edit" onclick="toggleEdit({{ expense.id }})">Edit</button>
+                                <form class="action-form" action="{% url 'expenses' %}" method="POST" onsubmit="return confirm('Delete this expense?');">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                                    <button type="submit" name="action" value="delete" class="btn-delete">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr class="edit-row{% if edit_expense_id != expense.id %} hidden{% endif %}" id="edit-{{ expense.id }}">
+                            <td colspan="5">
+                                <div class="edit-overlay">
+                                <form class="edit-form" action="{% url 'expenses' %}" method="POST">
+                                    <h3 class="edit-title">Edit expense</h3>
+                                    {% csrf_token %}
+                                    <input type="hidden" name="expense_id" value="{{ expense.id }}">
+                                    <input name="description" value="{% if edit_expense_id == expense.id %}{{ edit_values.description }}{% else %}{{ expense.description }}{% endif %}" required placeholder="Description">
+                                    <select name="category">
+                                        <option value="">No category</option>
+                                        {% for category in categories %}
+                                            <option value="{{ category.id }}" {% if edit_expense_id == expense.id and edit_values.category == category.id|stringformat:'s' or edit_expense_id != expense.id and expense.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <input type="date" name="date" value="{% if edit_expense_id == expense.id %}{{ edit_values.date }}{% else %}{{ expense.date|date:'Y-m-d' }}{% endif %}" required>
+                                    <input type="number" name="amount" step="0.01" min="0.01" value="{% if edit_expense_id == expense.id %}{{ edit_values.amount }}{% else %}{{ expense.amount }}{% endif %}" required>
+                                    <button type="submit" name="action" value="edit" class="btn-save">Save</button>
+                                    <button type="button" class="btn-cancel" onclick="toggleEdit({{ expense.id }})">Cancel</button>
+                                    {% if edit_expense_id == expense.id %}
+                                        {% for message in edit_errors.date %}
+                                            <span class="edit-errors"><i class="fas fa-exclamation-circle"></i> {{ message }}</span>
+                                        {% endfor %}
+                                    {% endif %}
+                                </form>
+                                </div>
                             </td>
                         </tr>
                     {% endfor %}
@@ -70,4 +111,9 @@
         </div>
     </div>
 </div>
+<script>
+function toggleEdit(id) {
+    document.getElementById(`edit-${id}`).classList.toggle('hidden');
+}
+</script>
 {% endblock %}

@@ -103,12 +103,15 @@ body {
     -o-border-radius: 10px;
 }
 
-.right-panel .buttons button {
+.right-panel .buttons .auth-nav-link {
     background-color: #ffffff;
     width: 100%;
     cursor: pointer;
     padding: 10px;
     border: none;
+    color: #1a3329;
+    text-align: center;
+    text-decoration: none;
     border-radius: 7px;
     -webkit-border-radius: 7px;
     -moz-border-radius: 7px;

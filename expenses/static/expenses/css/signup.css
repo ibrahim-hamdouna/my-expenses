@@ -60,10 +60,6 @@
     color: #c53030;
     border: 1px solid #feb2b2;
     border-radius: 30px;
-    -webkit-border-radius: 30px;
-    -moz-border-radius: 30px;
-    -ms-border-radius: 30px;
-    -o-border-radius: 30px;
 }
 .signup-form form .alert .msg-error {
     background-color: #fff5f5;
@@ -113,14 +109,21 @@
 .signup-form .login a {
     text-decoration: none;
     color: #2d6a4f;
-    font-weight: 500;
+    font-weight: 700;
     cursor: pointer;
 }
 /* End Signup Form */
 /* Start Mobile Screen */
 @media (max-width: 768px) {
-    .login-form {
+    .signup-form {
         text-align: center;
+    }
+    .signup-form form .full-name {
+        display: flex;
+        flex-direction: column;
+    }
+    .signup-form form .full-name .group_input {
+        width: 100%;
     }
 }
 /* End Mobile Screen */

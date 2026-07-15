@@ -1,0 +1,102 @@
+:root {
+    --primary-color: #1B4332;
+    --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
+}
+.add-expense-container {
+    padding: 2rem;
+}
+.add-expense-container .head {
+    margin-bottom: 1.5rem;
+}
+.add-expense-container .add-expense {
+    max-width: 540px;
+    padding: 1rem;
+    background-color: #FFFFFF;
+    box-shadow: var(--shadow);
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.add-expense-container .add-expense form .group-input{ 
+    margin-bottom: 20px;
+    width: 100%;
+}
+.add-expense-container .add-expense form .group-input .error_message {
+    display: block;
+    width: fit-content;
+    font-size: 0.7rem;
+    margin-top: 10px;
+    padding: 7px;
+    background-color: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+    border-radius: 30px;
+}
+.add-expense-container .add-expense form .groups {
+    display: flex;
+    justify-content: space-between;
+    gap: 7px;
+}
+.add-expense-container .add-expense form .groups .group-input {
+    margin-bottom: 0;
+}
+.add-expense-container .add-expense form .group-input label {
+    display: block;
+    color: #374151;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.add-expense-container .add-expense form .group-input input {
+    width: 100%;
+    color: #111827;
+    font-size: 1rem;
+    border: 1.5px solid #E5E7EB;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+.add-expense-container .add-expense form .group-input select {
+    width: 100%;
+    color: #111827;
+    font-size: 1rem;
+    border: 1.5px solid #E5E7EB;
+    padding: 8px 12px;
+    border-radius: 7px;
+}
+.add-expense-container .add-expense form .buttons button {
+    padding: 9px 18px;
+    border-radius: 8px;
+    font-size:  0.9rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all .15s;
+    gap: 6px;
+    white-space: nowrap; 
+}
+.add-expense-container .add-expense form .buttons .btn-add {
+    background-color: var(--primary-color);
+    color: white;
+}
+.add-expense-container .add-expense form .buttons .btn-add:hover {
+    background-color: #52b788;
+    transition: all 0.3s;
+}
+.add-expense-container .add-expense form .buttons .btn-clear {
+    background-color: transparent;
+    border: 1px solid #E5E7EB;
+}
+.add-expense-container .add-expense form .buttons .btn-clear:hover {
+    background-color: #F3F4F6;
+}
+/* Start Mobile Screen */
+@media (max-width: 768px) {
+    .add-expense-container {
+        text-align: center;
+    }
+    .add-expense-container .add-expense form .groups {
+        display: flex;
+        flex-direction: column;
+    }
+}
+/* End Mobile Screen */

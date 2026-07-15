@@ -2,8 +2,15 @@
     --primary-color: #1B4332;
     --shadow: 0 1px 3px rgba(0, 0, 0, .08), 0 1px 2px rgba(0, 0, 0, .06);
 }
+/* main is a flex child in base.css. It must be allowed to shrink so the
+   table wrapper, rather than the whole page, owns horizontal scrolling. */
+main {
+    min-width: 0;
+}
 .expenses-container {
     padding: 2rem;
+    max-width: 100%;
+    min-width: 0;
 }
 .expenses-container .head {
     display: flex;
@@ -27,6 +34,7 @@
     cursor: pointer;
     border: none;
     border-radius: 10px;
+    text-decoration: none;
 }
 .expenses-container .head .btn-add:hover {
     background-color: #52b788;
@@ -88,11 +96,22 @@
     filter: brightness(0.95);
 }
 .expenses-container .expenses form .buttons .btn-clear {
+    display: inline-block;
+    padding: 9px 18px;
+    border-radius: 8px;
+    color: #111827;
+    text-decoration: none;
     background-color: transparent;
     border: 1px solid #E5E7EB;
 }
 .expenses-container .expenses form .buttons .btn-clear:hover {
     background-color: #F3F4F6;
+}
+.expenses-container .expenses .table-wrapper {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 .expenses-container .expenses table {
     background-color: #FFFFFF;
@@ -100,6 +119,7 @@
     border-radius: 10px;
     margin-bottom: 20px;
     width: 100%;
+    min-width: 700px;
     border-collapse: collapse;
 }
 .expenses-container .expenses .table-wrapper table thead tr th {
@@ -127,11 +147,65 @@
     white-space: nowrap;
 }
 .expenses-container .expenses .table-wrapper table tbody tr .td-name span {
+    display: inline-block;
+    white-space: nowrap;
     border-width: 1px;
     border-style: solid;
     font-weight: 600;
     border-radius: 20px;
     padding: 3px 10px;
+}
+.expenses-container .expenses .action-form {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+}
+.expenses-container .expenses .edit-row.hidden {
+    display: none;
+}
+.expenses-container .expenses .edit-form {
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1fr 1fr auto auto;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 0;
+    padding: 0.5rem;
+    background: #f9fafb;
+    box-shadow: none;
+}
+.expenses-container .expenses .edit-title {
+    display: none;
+}
+.expenses-container .expenses .edit-form input,
+.expenses-container .expenses .edit-form select {
+    min-width: 0;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 7px;
+}
+.expenses-container .expenses .edit-form button {
+    padding: 8px 12px;
+    border: 0;
+    border-radius: 7px;
+    cursor: pointer;
+}
+.expenses-container .expenses .edit-form .btn-save {
+    color: white;
+    background: var(--primary-color);
+}
+.expenses-container .expenses .edit-form .btn-cancel {
+    background: #e5e7eb;
+}
+.expenses-container .expenses .edit-errors {
+    grid-column: 1 / -1;
+    color: #dc2626;
+}
+.expenses-container .expenses .table-wrapper table tbody tr .td-name .no-category {
+    color: #6b7280;
+    background-color: #f3f4f6;
+    border-color: #d1d5db;
 }
 .expenses-container .expenses .table-wrapper table tbody tr .td-date{
     color: #6B7280;
@@ -170,9 +244,9 @@
 }
 /* Start Mobile Screen */
 @media (max-width: 768px) {
-    .expenses-container {
+    .expenses-container .expenses {
             text-align: center;
-        }
+    }
     .expenses-container .head {
         flex-direction: column;
         justify-content: center;
@@ -183,17 +257,49 @@
         justify-content: flex-end;
         text-align: left;
     }
+    .expenses-container .expenses form .group-input label {
+        text-align: center;
+    }
     .expenses-container .expenses form div {
         width: 100%;
     }
     .expenses-container .expenses form .buttons {
         text-align: center;
     }
-    .expenses-container .expenses .table-wrapper {
-        overflow-x: auto;
-    }
     .expenses-container .expenses .table-wrapper table tbody tr .td-buttons button {
         margin-bottom: 5px;
+    }
+    .expenses-container .expenses .edit-form {
+        grid-template-columns: 1fr;
+        width: 100%;
+        max-width: 420px;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+        margin: 1rem;
+        padding: 1.25rem;
+        border-radius: 12px;
+        background: #fff;
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+    }
+    .expenses-container .expenses .edit-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 1000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5rem;
+        background: rgba(17, 24, 39, 0.55);
+    }
+    .expenses-container .expenses .edit-title {
+        display: block;
+        text-align: center;
+        color: #111827;
+    }
+    .expenses-container .expenses .edit-form input,
+    .expenses-container .expenses .edit-form select,
+    .expenses-container .expenses .edit-form button {
+        width: 100%;
     }
 }
 /* End Mobile Screen */

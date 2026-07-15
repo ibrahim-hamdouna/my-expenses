@@ -40,16 +40,17 @@
     <section class="right-panel">
         <main class="auth">
             <div class="buttons">
-                <button>Login</button>
-                <button>Create Account</button>
+                <a class="auth-nav-link" href="{% url 'login' %}">Login</a>
+                <a class="auth-nav-link" href="{% url 'signup' %}">Create Account</a>
             </div>
             {% block content %}
             {% endblock %}
         </main>
     </section>
     <!-- End Right Panel -->
-    <!-- Link File Javascript -->
+    <!-- Link File Javascript For Child -->
     {% block js_link %}
+    
     {% endblock %}
 </body>
 </html>

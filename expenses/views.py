@@ -2,7 +2,7 @@ from .seralizers import LoginSerializer, SignupSerializer, ExpensesSerializer, C
 from django.views.decorators.cache import never_cache
 from django.utils.decorators import method_decorator
 from rest_framework.permissions import AllowAny
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from rest_framework import response
 from rest_framework.views import APIView
 from .models import Expenses, Categories
@@ -25,7 +25,7 @@ class LoginAPIView(APIView):
         seralizer = LoginSerializer(data=request.data)
         if seralizer.is_valid():
             login(request, seralizer.validated_data['user'])
-            return  redirect('dashboard')
+            return redirect('dashboard')
     
         else:
             errors = {'errors': seralizer.errors}
@@ -110,14 +110,88 @@ class DashboardAPIView(APIView):
         return render(request, 'expenses/dashboard.html', content)
     
 class ExpensesAPIView(APIView):
-    def get(self, request, pk = None):
+    def get(self, request, pk = None):        
         expenses_queryset = Expenses.objects.filter(user=request.user).order_by('-date')
+        
+        selected_month = request.GET.get('date')
+        selected_category = request.GET.get('category') 
+        if selected_month:
+            year, month = selected_month.split('-')
+            expenses_queryset = expenses_queryset.filter(
+                date__year=year,
+                date__month=month,
+            )
+        if selected_category:
+            expenses_queryset = expenses_queryset.filter(
+                category_id=selected_category,
+            )
         total_spent = expenses_queryset.aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        categories = Categories.objects.filter(user=request.user)
         content = {
             'total_spent': total_spent,
+            'categories': categories,
             'expenses': expenses_queryset,
         }
-        return render(request, 'expenses/expenses.html', content)     
+        return render(request, 'expenses/expenses.html', content) 
+
+    def post(self, request):
+        expense = get_object_or_404(
+            Expenses,
+            pk=request.data.get('expense_id'),
+            user=request.user,
+        )
+        action = request.data.get('action')
+
+        if action == 'delete':
+            expense.delete()
+            return redirect('expenses')
+
+        if action == 'edit':
+            serializer = ExpensesSerializer(
+                expense,
+                data=request.data,
+                context={'request': request},
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return redirect('expenses')
+
+            expenses_queryset = Expenses.objects.filter(user=request.user).order_by('-date')
+            return render(request, 'expenses/expenses.html', {
+                'total_spent': expenses_queryset.aggregate(Sum('amount'))['amount__sum'] or 0,
+                'categories': Categories.objects.filter(user=request.user),
+                'expenses': expenses_queryset,
+                'edit_expense_id': expense.id,
+                'edit_errors': serializer.errors,
+                'edit_values': request.POST,
+            }, status=400)
+
+        return redirect('expenses')
+    
+class AddExpenseAPIView(APIView):
+    def get(self, request):
+        categories = Categories.objects.filter(user=request.user)
+        content = {'categories': categories}
+        return render(request, 'expenses/add-expense.html', content)
+    
+    def post(self, request):
+        serializer = ExpensesSerializer(
+            data=request.data,
+            context={'request': request}
+        )
+        
+        if serializer.is_valid():
+            serializer.save()
+            return redirect('expenses')
+        
+        categories = Categories.objects.filter(user=request.user)
+
+        return render(request, 'expenses/add-expense.html', {
+            'errors': serializer.errors,
+            'values': request.POST,
+            'categories': categories,
+        })
 
 class CategoriesAPIView(APIView):
     def get(self, request, pk = None):
