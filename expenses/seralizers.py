@@ -126,7 +126,22 @@ class ExpensesSerializer(serializers.ModelSerializer):
 class CategoriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Categories
-        fields = ['name', 'color', 'user']
+        fields = ['name', 'color']
+
+    def validate_name(self, value):
+        queryset = Categories.objects.filter(
+            user=self.context['request'].user,
+            name__iexact=value.strip(),
+        )
+        if self.instance:
+            queryset = queryset.exclude(pk=self.instance.pk)
+        if queryset.exists():
+            raise serializers.ValidationError("You already have a category with this name.")
+        return value.strip()
+
+    def create(self, validated_data):
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)
 
 class UserReportSerializer(serializers.ModelSerializer):
     class Meta:

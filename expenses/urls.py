@@ -16,7 +16,6 @@ urlpatterns = [
     path('expenses/', ExpensesAPIView.as_view(), name='expenses'),
     path('add-expense/', AddExpenseAPIView.as_view(), name='add-expense'),
     path('categories/', CategoriesAPIView.as_view(), name='categories'),
-    path('categories/<int:pk>/', CategoriesAPIView.as_view(), name='categories-action'),
     path('reports/', ReportsAPIView.as_view(), name='reports'),
 ]
 

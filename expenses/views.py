@@ -194,9 +194,9 @@ class AddExpenseAPIView(APIView):
         })
 
 class CategoriesAPIView(APIView):
-    def get(self, request, pk = None):
+    def get_categories(self, request):
         now = timezone.now().date()
-        expenses_per_category = Categories.objects.filter(user=request.user).annotate(
+        return Categories.objects.filter(user=request.user).annotate(
             total_expenses = Coalesce(
                     Sum('expenses__amount',filter=Q(expenses__date__year=now.year, expenses__date__month=now.month)), 
                     Value(Decimal(0.0))
@@ -206,14 +206,50 @@ class CategoriesAPIView(APIView):
                     Value(0)
             )
         ).values('id', 'name', 'color', 'total_expenses', 'num_expenses')
-        content = {
-            'expenses_per_category': expenses_per_category,
-        }
-        return render(request, 'expenses/categories.html', content)
-    
-    def delete(self, request, pk):
-        category = Categories.objects.get(pk=pk, user=request.user)
-        category.delete()
+
+    def get(self, request):
+        return render(request, 'expenses/categories.html', {
+            'expenses_per_category': self.get_categories(request),
+        })
+
+    def post(self, request):
+        action = request.data.get('action')
+
+        if action == 'delete':
+            category = get_object_or_404(
+                Categories,
+                pk=request.data.get('category_id'),
+                user=request.user,
+            )
+            category.delete()
+            return redirect('categories')
+
+        category = None
+        if action == 'edit':
+            category = get_object_or_404(
+                Categories,
+                pk=request.data.get('category_id'),
+                user=request.user,
+            )
+
+        if action in ('add', 'edit'):
+            serializer = CategoriesSerializer(
+                category,
+                data=request.data,
+                context={'request': request},
+            )
+            if serializer.is_valid():
+                serializer.save()
+                return redirect('categories')
+
+            return render(request, 'expenses/categories.html', {
+                'expenses_per_category': self.get_categories(request),
+                'category_form_action': action,
+                'edit_category_id': category.id if category else None,
+                'category_errors': serializer.errors,
+                'category_values': request.POST,
+            }, status=400)
+
         return redirect('categories')
 
 class ReportsAPIView(APIView):
