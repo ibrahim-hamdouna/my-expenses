@@ -1,81 +1,234 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load static %}
-{% block title %}
-    Categories
-{% endblock %}
+
+{% block title %}Categories{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'expenses/css/categories.css' %}">
+    <link rel="stylesheet" href="{% static 'expenses/css/categories.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="categories-container">
     <div class="head">
         <div class="text">
-            <h2>Categories</h2>
-            <h3>Organise your spending</h3>
+            <h1>Categories</h1>
+            <p>Organise your spending</p>
         </div>
-        <button type="button" class="btn-add" onclick="toggleCategoryForm('add-category')">+ Add Category</button>
+        <button
+            type="button"
+            class="btn-add"
+            data-dialog-target="add-category"
+            aria-controls="add-category"
+            aria-expanded="{% if category_form_action == 'add' %}true{% else %}false{% endif %}"
+        >
+            + Add Category
+        </button>
     </div>
-    <div class="categories">
+
+    <section class="categories" aria-label="Expense categories">
         {% for category in expenses_per_category %}
-            <div class="category">
-                <div class="point" style="background-color: {{ category.color }}33;">
-                    <div class="inner-dot" style="background-color: {{ category.color }};"></div>
+            <article class="category">
+                <div
+                    class="point"
+                    style="background-color: {{ category.color }}33;"
+                    aria-hidden="true"
+                >
+                    <div
+                        class="inner-dot"
+                        style="background-color: {{ category.color }};"
+                    ></div>
                 </div>
                 <div class="details">
-                    <div class="name">{{ category.name }}</div>
-                    <div class="details-expenses">
-                        ${{ category.total_expenses }}, {{ category.num_expenses }} expenses
-                    </div>
+                    <h2 class="name">{{ category.name }}</h2>
+                    <p class="details-expenses">
+                        ${{ category.total_expenses|floatformat:2 }},
+                        {{ category.num_expenses }}
+                        expense{{ category.num_expenses|pluralize }}
+                    </p>
                 </div>
-                <div class="line" style="background-color: {{ category.color }};"></div>
+                <div
+                    class="line"
+                    style="background-color: {{ category.color }};"
+                    aria-hidden="true"
+                ></div>
                 <div class="buttons">
-                    <button type="button" class="btn-edit" onclick="toggleCategoryForm('edit-category-{{ category.id }}')">Edit</button>
-                    <form class="delete-form" action="{% url 'categories' %}" method="POST" onsubmit="return confirm('Delete this category? Expenses in it will become uncategorized.');">
+                    <button
+                        type="button"
+                        class="btn-edit"
+                        data-dialog-target="edit-category-{{ category.id }}"
+                        aria-controls="edit-category-{{ category.id }}"
+                        aria-expanded="{% if edit_category_id == category.id %}true{% else %}false{% endif %}"
+                    >
+                        Edit
+                    </button>
+                    <form
+                        class="delete-form"
+                        action="{% url 'categories' %}"
+                        method="post"
+                        data-confirm="Delete this category? Expenses in it will become uncategorized."
+                    >
                         {% csrf_token %}
                         <input type="hidden" name="category_id" value="{{ category.id }}">
-                        <button type="submit" name="action" value="delete" class="btn-delete">Delete</button>
+                        <button
+                            type="submit"
+                            name="action"
+                            value="delete"
+                            class="btn-delete"
+                            aria-label="Delete {{ category.name }}"
+                        >
+                            Delete
+                        </button>
                     </form>
                 </div>
-            </div>
-            <div id="edit-category-{{ category.id }}" class="category-overlay{% if edit_category_id != category.id %} hidden{% endif %}">
-                <form class="category-form" action="{% url 'categories' %}" method="POST">
-                    <h3>Edit category</h3>
+            </article>
+
+            <div
+                id="edit-category-{{ category.id }}"
+                class="category-overlay{% if edit_category_id != category.id %} hidden{% endif %}"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="edit-category-title-{{ category.id }}"
+            >
+                <form class="category-form" action="{% url 'categories' %}" method="post">
+                    <h2 id="edit-category-title-{{ category.id }}">Edit category</h2>
                     {% csrf_token %}
                     <input type="hidden" name="category_id" value="{{ category.id }}">
+
                     <label for="edit-name-{{ category.id }}">Name</label>
-                    <input id="edit-name-{{ category.id }}" name="name" value="{% if edit_category_id == category.id %}{{ category_values.name }}{% else %}{{ category.name }}{% endif %}" maxlength="100" required>
+                    <input
+                        id="edit-name-{{ category.id }}"
+                        name="name"
+                        value="{% if edit_category_id == category.id %}{{ category_values.name }}{% else %}{{ category.name }}{% endif %}"
+                        maxlength="100"
+                        autocomplete="off"
+                        required
+                    >
+
                     <label for="edit-color-{{ category.id }}">Color</label>
-                    <input id="edit-color-{{ category.id }}" name="color" type="color" value="{% if edit_category_id == category.id %}{{ category_values.color }}{% else %}{{ category.color }}{% endif %}" required>
-                    {% if edit_category_id == category.id %}<div class="form-errors">{{ category_errors }}</div>{% endif %}
+                    <input
+                        id="edit-color-{{ category.id }}"
+                        name="color"
+                        type="color"
+                        value="{% if edit_category_id == category.id %}{{ category_values.color }}{% else %}{{ category.color }}{% endif %}"
+                        required
+                    >
+
+                    {% if edit_category_id == category.id and category_errors %}
+                        <div class="form-errors" role="alert">
+                            {% for field, messages in category_errors.items %}
+                                {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
                     <div class="form-buttons">
-                        <button type="submit" name="action" value="edit" class="btn-save">Save</button>
-                        <button type="button" class="btn-cancel" onclick="toggleCategoryForm('edit-category-{{ category.id }}')">Cancel</button>
+                        <button type="submit" name="action" value="edit" class="btn-save">
+                            Save
+                        </button>
+                        <button
+                            type="button"
+                            class="btn-cancel"
+                            data-dialog-target="edit-category-{{ category.id }}"
+                        >
+                            Cancel
+                        </button>
                     </div>
                 </form>
             </div>
+        {% empty %}
+            <p class="empty">You do not have any categories yet.</p>
         {% endfor %}
-    </div>
-    <div id="add-category" class="category-overlay{% if category_form_action != 'add' %} hidden{% endif %}">
-        <form class="category-form" action="{% url 'categories' %}" method="POST">
-            <h3>Add category</h3>
+    </section>
+
+    <div
+        id="add-category"
+        class="category-overlay{% if category_form_action != 'add' %} hidden{% endif %}"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="add-category-title"
+    >
+        <form class="category-form" action="{% url 'categories' %}" method="post">
+            <h2 id="add-category-title">Add category</h2>
             {% csrf_token %}
+
             <label for="add-name">Name</label>
-            <input id="add-name" name="name" value="{{ category_values.name }}" maxlength="100" required>
+            <input
+                id="add-name"
+                name="name"
+                value="{{ category_values.name }}"
+                maxlength="100"
+                autocomplete="off"
+                required
+            >
+
             <label for="add-color">Color</label>
-            <input id="add-color" name="color" type="color" value="{{ category_values.color|default:'#52b788' }}" required>
-            {% if category_form_action == 'add' %}<div class="form-errors">{{ category_errors }}</div>{% endif %}
+            <input
+                id="add-color"
+                name="color"
+                type="color"
+                value="{{ category_values.color|default:'#52b788' }}"
+                required
+            >
+
+            {% if category_form_action == "add" and category_errors %}
+                <div class="form-errors" role="alert">
+                    {% for field, messages in category_errors.items %}
+                        {% for message in messages %}<p>{{ message }}</p>{% endfor %}
+                    {% endfor %}
+                </div>
+            {% endif %}
+
             <div class="form-buttons">
-                <button type="submit" name="action" value="add" class="btn-save">Add</button>
-                <button type="button" class="btn-cancel" onclick="toggleCategoryForm('add-category')">Cancel</button>
+                <button type="submit" name="action" value="add" class="btn-save">
+                    Add
+                </button>
+                <button
+                    type="button"
+                    class="btn-cancel"
+                    data-dialog-target="add-category"
+                >
+                    Cancel
+                </button>
             </div>
         </form>
     </div>
 </div>
+
 <script>
-function toggleCategoryForm(id) {
-    document.getElementById(id).classList.toggle('hidden');
-}
+document.querySelectorAll('[data-dialog-target]').forEach((button) => {
+    button.addEventListener('click', () => {
+        const dialog = document.getElementById(button.dataset.dialogTarget);
+        const isOpening = dialog.classList.contains('hidden');
+        dialog.classList.toggle('hidden');
+
+        document.querySelectorAll(`[aria-controls="${dialog.id}"]`).forEach((control) => {
+            control.setAttribute('aria-expanded', String(isOpening));
+        });
+
+        if (isOpening) {
+            dialog.querySelector('input:not([type="hidden"])')?.focus();
+        }
+    });
+});
+
+document.querySelectorAll('[data-confirm]').forEach((form) => {
+    form.addEventListener('submit', (event) => {
+        if (!window.confirm(form.dataset.confirm)) {
+            event.preventDefault();
+        }
+    });
+});
+
+document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+
+    const dialog = document.querySelector('.category-overlay:not(.hidden)');
+    if (dialog) {
+        dialog.classList.add('hidden');
+        const control = document.querySelector(`[aria-controls="${dialog.id}"]`);
+        control?.setAttribute('aria-expanded', 'false');
+        control?.focus();
+    }
+});
 </script>
 {% endblock %}

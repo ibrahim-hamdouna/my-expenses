@@ -11,8 +11,10 @@
     align-items: center;
     margin-bottom: 1.5rem;
 }
-.categories-container .head h3 {
+.categories-container .head p {
+    margin-top: 0.35rem;
     font-weight: normal;
+    color: #6B7280;
 }
 .categories-container .head .btn-add {
     background-color: var(--primary-color);
@@ -132,7 +134,7 @@
     box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
     text-align: left;
 }
-.category-form h3 {
+.category-form h2 {
     margin-bottom: 0.5rem;
     text-align: center;
 }
@@ -175,6 +177,12 @@
 }
 .category-form .form-errors {
     color: #dc2626;
+}
+.category-form .form-errors p {
+    margin: 0.25rem 0;
+}
+.categories-container .categories .empty {
+    color: #6B7280;
 }
 /* Start Mobile Screen */
 @media (max-width: 768px) {
