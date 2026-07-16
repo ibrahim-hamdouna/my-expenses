@@ -1,7 +1,7 @@
 :root {
     /* Colors */
     --primary-color: #1B4332;
-    --body-bg-color: #F0FBF4
+    --body-bg-color: #F0FBF4;
 }
 * {
     margin: 0;
@@ -11,7 +11,6 @@
 }
 body {
     display: flex;
-    justify-content: flex-start;
     background-color: var(--body-bg-color);
 }
 header {
@@ -27,20 +26,14 @@ header nav .logo {
     font-weight: bold;
 }
 header nav .logo i {
-    display: inline-block;
     padding: 8px 13px;
     margin-right: 10px;
     font-size: 20px;
     background-color: #52B788;
     border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
 }
 header nav ul {
     list-style: none;
-    text-decoration: none;
 }
 header nav ul li{
     padding-top: 20px;
@@ -55,13 +48,12 @@ header nav ul li a:hover {
     opacity: 1;
 }
 header nav ul li a i {
-    display: inline-block;
     margin-right: 5px;
 }
 main {
     flex: 1;
     min-width: 0;
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -96,7 +88,7 @@ main {
     header nav .logo,
     header nav ul li a {
         display: flex;
-        flex-flow: column wrap;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
         font-size: 16px;

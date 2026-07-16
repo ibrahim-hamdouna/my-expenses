@@ -4,12 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Expenses - {% block title %}{% endblock %}</title>
-    <!-- Link File CSS For auth-base.html -->
+    <title>My Expenses - {% block title %}Account{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/auth_base.css' %}">
-    <!-- Link Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Link File CSS For Child  -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -17,7 +17,7 @@
     <section class="left-panel">
         <div class="logo">
             <span class="logo-icon-box">
-                <i class="fa-solid fa-dollar-sign"></i>
+                <i class="fa-solid fa-dollar-sign" aria-hidden="true"></i>
             </span>
             My Expenses
         </div>
@@ -30,27 +30,23 @@
                 <br>
                 effortlessly.
             </h1>
-            <div class="hero-sub">
+            <p class="hero-sub">
                 Get a clear picture of your finances. Set budgets, categorise spending, and watch your savings grow.
-            </div>
+            </p>
         </div>
     </section>
     <!-- End Left Panel -->
     <!-- Start Right Panel -->
     <section class="right-panel">
         <main class="auth">
-            <div class="buttons">
+            <nav class="buttons" aria-label="Authentication">
                 <a class="auth-nav-link" href="{% url 'login' %}">Login</a>
                 <a class="auth-nav-link" href="{% url 'signup' %}">Create Account</a>
-            </div>
+            </nav>
             {% block content %}
             {% endblock %}
         </main>
     </section>
     <!-- End Right Panel -->
-    <!-- Link File Javascript For Child -->
-    {% block js_link %}
-    
-    {% endblock %}
 </body>
 </html>

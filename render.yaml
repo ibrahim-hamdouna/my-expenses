@@ -1,0 +1,25 @@
+databases:
+  - name: my-expenses-db
+    plan: free
+    databaseName: my_expenses
+    user: my_expenses
+
+services:
+  - type: web
+    name: my-expenses
+    runtime: python
+    plan: free
+    buildCommand: bash build.sh
+    startCommand: gunicorn my_expenses.wsgi:application
+    healthCheckPath: /expenses/
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: my-expenses-db
+          property: connectionString
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DEBUG
+        value: "False"
+      - key: WEB_CONCURRENCY
+        value: "2"

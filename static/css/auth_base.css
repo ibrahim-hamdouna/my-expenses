@@ -5,19 +5,19 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'DM Sans', sans-serif;
+    font-family: 'Inter', 'Segoe UI';
 }
 body {
     display: grid;
     grid-template-columns: 1fr 1fr;
     background: var(--body-bg-color);
-    min-height: 100vh;
+    min-height: 100dvh;
 }
 /* Start Left Panel */
 .left-panel {
     position: sticky;
     top: 0;
-    height: 100vh;
+    height: 100dvh;
     background-color: #1a3329;
     display: flex;
     flex-direction: column;
@@ -38,10 +38,6 @@ body {
     margin-right: 7px;
     font-size: 1.2rem;
     border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
 } 
 .left-panel .hero-content .hero-tag {
     display: inline-block;
@@ -71,7 +67,6 @@ body {
 .left-panel .hero-content .hero-sub {
     color: rgba(255, 255, 255, 0.55);
     width: 100%; 
-    line-height: 1.7;
     font-size: 1.1rem;
     line-height: 1.6; 
     opacity: 0.9;
@@ -97,26 +92,16 @@ body {
     margin-bottom: 2rem;
     box-shadow: 0 2px 8px rgba(26, 51, 41, 0.10);
     border-radius: 10px;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    -ms-border-radius: 10px;
-    -o-border-radius: 10px;
 }
 
 .right-panel .buttons .auth-nav-link {
     background-color: #ffffff;
     width: 100%;
-    cursor: pointer;
     padding: 10px;
-    border: none;
     color: #1a3329;
     text-align: center;
     text-decoration: none;
     border-radius: 7px;
-    -webkit-border-radius: 7px;
-    -moz-border-radius: 7px;
-    -ms-border-radius: 7px;
-    -o-border-radius: 7px;
 }
 /* End Left Panel */
 /* Start Mobil Screen */
@@ -126,14 +111,12 @@ body {
     }
     body {
         grid-template-columns: 1fr; 
-        overflow: auto; 
     }
     .left-panel {
         min-height: 50vh;
         height: auto;
         text-align: center;
         position: relative;
-        overflow: auto;
     }
 }
 /* End Mobil Screen */

@@ -12,16 +12,16 @@
 <body>
     {% block navbar %}
         <header>
-            <nav>
+            <nav aria-label="Main navigation">
                 <div class="logo">
                     <i class="fa-solid fa-dollar-sign"></i>
                     My Expenses
                 </div>
                 <ul>
-                    <li><a href="{% url 'dashboard' %}"><i class="fa-solid fa-list-ul"></i> Dashboard</a></li>
-                    <li><a href="{% url 'expenses' %}"><i class="fa-solid fa-pen"></i> Expenses</a></li>
-                    <li><a href='{% url 'categories' %}'><i class="fa-solid fa-tags"></i> Categories</a></li>
-                    <li><a href="{% url 'reports' %}"><i class="fa-solid fa-chart-line"></i> Reports</a></li>
+                    <li><a href="{% url 'dashboard' %}"><i class="fa-solid fa-list-ul" aria-hidden="true"></i> Dashboard</a></li>
+                    <li><a href="{% url 'expenses' %}"><i class="fa-solid fa-pen" aria-hidden="true"></i> Expenses</a></li>
+                    <li><a href='{% url 'categories' %}'><i class="fa-solid fa-tags" aria-hidden="true"></i> Categories</a></li>
+                    <li><a href="{% url 'reports' %}"><i class="fa-solid fa-chart-line" aria-hidden="true"></i> Reports</a></li>
                 </ul>
             </nav>
         </header>
@@ -32,11 +32,9 @@
             {% endblock %}
         </div>
         <footer class="site-footer">
-            <span>My Expenses</span> · Developed by
+            <span>My Expenses</span> &middot; Developed by
             <a href="https://github.com/ibrahim-hamdouna" target="_blank" rel="noopener noreferrer">Ibrahim Hamdouna</a>
         </footer>
     </main>
-    {% block js_link %}
-    {% endblock %}
 </body>
 </html>
