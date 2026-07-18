@@ -88,13 +88,11 @@ main {
     }
     header {
         padding: 10px 5px;
-        text-align: center;
         min-height: fit-content;
-        border-radius: 10px;
-        margin-top: 10px;
     }
     header nav {
         display: flex;
+        justify-content: space-between;
         align-items: center;
         gap: 10px;
     }
