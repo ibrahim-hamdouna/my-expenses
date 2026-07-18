@@ -245,13 +245,13 @@ main {
 /* Start Mobile Screen */
 @media (max-width: 768px) {
     .expenses-container .expenses {
-            text-align: center;
+        text-align: center;
     }
-    .expenses-container .head {
+    /* .expenses-container .head {
         flex-direction: column;
         justify-content: center;
         gap: 1.7rem;
-    }
+    } */
     .expenses-container .expenses form {
         flex-direction: column;
         justify-content: flex-end;

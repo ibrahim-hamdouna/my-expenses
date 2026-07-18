@@ -241,10 +241,4 @@
 .expenses-container section .recent-transactions .expenses .expense .amount {
     font-weight: bold;
 }
-@media (max-width: 768px) {
-    .expenses-container .head {
-        flex-direction: column;
-        justify-content: center;
-        gap: 1.7rem;
-    }
-}
+
