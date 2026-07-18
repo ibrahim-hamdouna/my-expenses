@@ -9,3 +9,4 @@ reportlab==5.0.0
 sqlparse==0.5.5
 tzdata==2026.1
 whitenoise[brotli]>=6.9,<7.0
+python-dotenv>=1.0,<2.0
