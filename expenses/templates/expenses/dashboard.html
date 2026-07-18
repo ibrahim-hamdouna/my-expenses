@@ -9,86 +9,108 @@
 {% endblock %}
 
 {% block content %}
-    <div class="expenses-container">
-        <div class="head">
-            <div class="text">
-                <h2>Overview</h2>
-                <h3>Your spending companion.</h3>
-            </div>
-            <a class="btn-add" href="{% url 'add-expense' %}">+ Add Expense</a>
+<div class="expenses-container">
+    <div class="head">
+        <div class="text">
+            <h2>Overview</h2>
+            <h3>Your spending companion.</h3>
         </div>
-        <div class="statistics">
-            <div class="stat">
-                <div class="stat-label">This Month</div>
-                <div class="stat-value">${{ current_month_total }}</div>
-                <div class="stat-more">${{ monthly_spending_diff }} vs last month</div> 
-            </div>
-            <div class="stat">
-                <div class="stat-label">Budget Remaining:</div>
-                <div class="stat-value">${{ budget_remaining }}</div>
-                <div class="stat-more">{{ budget_used }}% of budget used</div> 
-            </div>
-            <div class="stat">
-                <div class="stat-label">Last Month</div>
-                <div class="stat-value">${{ previous_month_total }}</div>
-                <div class="stat-more">{{ spending_change_percent }}% vs prior month</div> 
-            </div>
-            <div class="stat">
-                <div class="stat-label">Transactions:</div>
-                <div class="stat-value">{{ expenses|length }}</div>
-                <div class="this-month">This month</div> 
+        <a class="btn-add" href="{% url 'add-expense' %}">+ Add Expense</a>
+    </div>
+    <div class="statistics">
+        <div class="stat">
+            <div class="stat-label">This Month</div>
+            <div class="stat-value">${{ current_month_total }}</div>
+            <div class="stat-more">${{ monthly_spending_diff }} vs last month</div> 
+        </div>
+        <div class="stat">
+            <div class="stat-label">Budget Remaining:</div>
+            <div class="stat-value">${{ budget_remaining }}</div>
+            <div class="stat-more">{{ budget_used }}% of budget used</div> 
+        </div>
+        <div class="stat">
+            <div class="stat-label">Last Month</div>
+            <div class="stat-value">${{ previous_month_total }}</div>
+            <div class="stat-more">{{ spending_change_percent }}% vs prior month</div> 
+        </div>
+        <div class="stat">
+            <div class="stat-label">Transactions:</div>
+            <div class="stat-value">{{ expenses|length }}</div>
+            <div class="this-month">This month</div> 
+        </div>
+        <div class="stat">
+            <div class="stat-label">Monthly Income</div>
+            <div class="stat-value">${{ request.user.salary|floatformat:2 }}</div>
+            <button type="button" class="btn-edit" onclick="toggleEdit()">Edit salary</button>
+            <div class="edit-salary hidden">
+                <form class="edit-form" action="{% url 'dashboard' %}" method="POST">
+                    {% csrf_token %}
+                    <input type="number" name="salary" value="{{ request.user.salary }}" min="0" step="0.01" required>
+                    <button type="submit" class="btn-save">Save</button>
+                    <button type="button" class="btn-cancel" onclick="toggleEdit()">Cancel</button>
+                </form> 
             </div>
         </div>
-        <section>
-            <div class="category-breakdown">
-                <h3>Category Breakdown</h3>
-                <div class="categorys">
-                    {% for category in categories %}
-                        <div class="category">
-                            <div class="left-side">
-                                <span class="point" style="background-color: {{ category.color }}"></span>
-                                <span class="category-name" style="color: {{ category.color }};">{{ category.name }}</span>
-                            </div>
-                            <div class="right-side">
-                                <span class="progress-container">
-                                    <span class="progress-bar" style="background-color: {{ category.color }}; width: {{ category.ratio }}%;"></span>
-                                </span>
-                                <span class="ratio">{{ category.ratio | floatformat:1 }}%</span> 
-                                <span class="total-category">${{ category.amount | floatformat:2 }}</span>
-                            </div>
+    </div>
+    <section>
+        <div class="category-breakdown">
+            <h3>Category Breakdown</h3>
+            <div class="categorys">
+                {% for category in categories %}
+                    <div class="category">
+                        <div class="left-side">
+                            <span class="point" style="background-color: {{ category.color }}"></span>
+                            <span class="category-name" style="color: {{ category.color }};">{{ category.name }}</span>
                         </div>
-                    {% endfor %}
-                </div>
+                        <div class="right-side">
+                            <span class="progress-container">
+                                <span class="progress-bar" style="background-color: {{ category.color }}; width: {{ category.ratio }}%;"></span>
+                            </span>
+                            <span class="ratio">{{ category.ratio | floatformat:1 }}%</span> 
+                            <span class="total-category">${{ category.amount | floatformat:2 }}</span>
+                        </div>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="recent-transactions">
-                <div class="header">
-                    <h3>Recent Expenses</h3>
-                    <button class="btn-view-all">View All</button>
-                </div>
-                <div class="expenses">
-                    {% for expense in expenses %}
-                        <div class="expense">
-                            <div class="left-side">
-                                <span class="point" style="background-color: {% if expense.category %}{{ expense.category.color }}{% else %}#6B7280{% endif %};"></span>
-                                <div class="data">
-                                    <span class="description">{{ expense.description }}</span>
-                                    <div class="details">
-                                        <span class="category">{% if expense.category %}{{ expense.category.name }}{% else %}No category{% endif %},</span>
-                                        <span class="date">
-                                            {% if expense.date == today %} 
-                                                <span class="today-label">Today</span> 
-                                            {% else %} 
-                                                {{ expense.date }} 
-                                            {% endif %}
-                                        </span>
-                                    </div>
+        </div>
+        <div class="recent-transactions">
+            <div class="header">
+                <h3>Recent Expenses</h3>
+                <a class="btn-view-all" href="{% url 'expenses' %}">View All</a>
+            </div>
+            <div class="expenses">
+                {% for expense in expenses %}
+                    <div class="expense">
+                        <div class="left-side">
+                            <span class="point" style="background-color: {% if expense.category %}{{ expense.category.color }}{% else %}#6B7280{% endif %};"></span>
+                            <div class="data">
+                                <span class="description">{{ expense.description }}</span>
+                                <div class="details">
+                                    <span class="category">{% if expense.category %}{{ expense.category.name }}{% else %}No category{% endif %},</span>
+                                    <span class="date">
+                                        {% if expense.date == today %} 
+                                            <span class="today-label">Today</span> 
+                                        {% else %} 
+                                            {{ expense.date }} 
+                                        {% endif %}
+                                    </span>
                                 </div>
                             </div>
-                            <div class="right-side">${{ expense.amount|floatformat:2}}</div>
                         </div>
-                    {% endfor %}
-                </div>
+                        <div class="right-side">${{ expense.amount|floatformat:2}}</div>
+                    </div>
+                {% endfor %}
             </div>
-        </section>
-    </div>
+        </div>
+    </section>
+</div>
+<script>
+    function toggleEdit() {
+        const btnEdit = document.querySelector(".btn-edit")
+        const editSalary = document.querySelector(".edit-salary")
+
+        btnEdit.classList.toggle("hidden")
+        editSalary.classList.toggle("hidden")
+    }
+</script>
 {% endblock %}

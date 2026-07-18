@@ -19,6 +19,7 @@ from .seralizers import (
     CategoriesSerializer,
     ExpensesSerializer,
     LoginSerializer,
+    SalarySerializer,
     SignupSerializer,
 )
 
@@ -48,7 +49,8 @@ class LoginAPIView(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            login(request, serializer.validated_data["user"])
+            user = serializer.validated_data["user"]
+            login(request, user)
             return redirect("dashboard")
 
         return render(
@@ -159,7 +161,23 @@ class DashboardAPIView(APIView):
             },
         )
 
+    def post(self, request):
+        if not request.user.is_authenticated:
+            return redirect("login")
 
+        serializer = SalarySerializer(
+            request.user,
+            data=request.data,
+            partial=True,
+        )
+
+        if serializer.is_valid():
+            serializer.save()
+            return redirect("dashboard")
+
+        return self.get(request)
+ 
+        
 class ExpensesAPIView(APIView):
     def get(self, request):
         expenses = Expense.objects.filter(user=request.user).order_by("-date")

@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.contrib.auth import authenticate, get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError as DjangoValidationError
@@ -78,18 +80,11 @@ class SignupSerializer(serializers.ModelSerializer):
         }
 
     def validate_email(self, value):
-        value = value.strip().lower()
+        value = value.lower()
         if User.objects.filter(email__iexact=value).exists():
             raise serializers.ValidationError(
                 "This email is already registered."
             )
-        return value
-
-    def validate_password(self, value):
-        try:
-            validate_password(value)
-        except DjangoValidationError as error:
-            raise serializers.ValidationError(error.messages) from error
         return value
 
     def validate(self, attrs):
@@ -97,11 +92,34 @@ class SignupSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 {"password_confirm": "Passwords do not match."}
             )
+        
+        # Create an unsaved User instance using the submitted information.
+        # Django's password validators use it to check whether the password
+        # is too similar to the username, email, first name, or last name.
+        temporary_user = User(
+            username=attrs["username"],
+            email=attrs["email"],
+            first_name=attrs["first_name"],
+            last_name=attrs["last_name"],
+        )
+        
+        try:
+            # Run Django's configured password validators.
+            # The temporary user is only used for comparison and is not saved.
+            validate_password(attrs["password"], user=temporary_user)
+        except DjangoValidationError as error:
+            raise serializers.ValidationError({"password": error.messages}) from error
         return attrs
 
     def create(self, validated_data):
         validated_data.pop("password_confirm")
         return User.objects.create_user(**validated_data)
+
+
+class SalarySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ["salary"]
 
 
 class ExpensesSerializer(serializers.ModelSerializer):
