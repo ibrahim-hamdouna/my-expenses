@@ -11,10 +11,8 @@
     align-items: center;
     margin-bottom: 1.5rem;
 }
-.categories-container .head p {
-    margin-top: 0.35rem;
+.categories-container .head h3 {
     font-weight: normal;
-    color: #6B7280;
 }
 .categories-container .head .btn-add {
     background-color: var(--primary-color);
@@ -186,16 +184,10 @@
 }
 /* Start Mobile Screen */
 @media (max-width: 768px) {
-    .categories-container {
-        text-align: center;
-    }
-    .categories-container .head {
-        flex-direction: column;
-        gap: 1.7rem;
-    }
     .categories-container .categories .category {
         justify-content: center;
         align-items: center;
+        text-align: center;
     }
     .categories-container .categories .category .point {
         width: 40px;

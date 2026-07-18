@@ -82,8 +82,33 @@ main {
     html {
         font-size: 13px;
     }
+    body {
+        flex-direction: column;
+        align-items: stretch;
+    }
     header {
         padding: 10px 5px;
+        text-align: center;
+        min-height: fit-content;
+        border-radius: 10px;
+        margin-top: 10px;
+    }
+    header nav {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    header nav ul {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 7px;
+    }
+    header nav ul li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
     }
     header nav .logo,
     header nav ul li a {
@@ -92,6 +117,8 @@ main {
         justify-content: center;
         align-items: center;
         font-size: 16px;
+        padding: 0;
+        border: none;
     }
     header nav .logo i {
         padding: 5px 10px;
